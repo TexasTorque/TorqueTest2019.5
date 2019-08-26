@@ -1,0 +1,175 @@
+package org.texastorque.inputs;
+
+import org.texastorque.constants.*;
+import org.texastorque.torquelib.component.TorqueEncoder;
+
+import edu.wpi.first.wpilibj.CounterBase.EncodingType;
+import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.networktables.*;
+import com.kauailabs.navx.frc.AHRS;
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.AnalogInput;
+
+/**
+ * Retrieve values from all sensors and NetworkTables
+ */
+
+public class Feedback {
+
+    private static volatile Feedback instance;
+
+    // Conversions
+    public final double DISTANCE_PER_PULSE = Math.PI * Constants.WHEEL_DIAMETER / Constants.PULSES_PER_ROTATION;
+    public final double ANGLE_PER_PULSE = 360.0 / Constants.PULSES_PER_ROTATION;
+    public final double FEET_CONVERSION = Math.PI * (1.0/20) / Constants.PULSES_PER_ROTATION; // Using approximate shaft diameter
+
+    // Sensors
+    private final TorqueEncoder[] DB_rot_encoders= new TorqueEncoder[4];
+
+    private final AHRS NX_gyro;
+
+    private final boolean clockwise = false;
+
+    // NetworkTables
+    private NetworkTableInstance NT_instance;
+    private NetworkTableEntry NT_offsetEntry;
+    
+    private Feedback() {
+        DB_rot_encoders[0] = new TorqueEncoder(Ports.DB_ROT_1_A, Ports.DB_ROT_1_B, clockwise, EncodingType.k4X);
+        DB_rot_encoders[1] = new TorqueEncoder(Ports.DB_ROT_2_A, Ports.DB_ROT_2_B, clockwise, EncodingType.k4X);
+        DB_rot_encoders[2] = new TorqueEncoder(Ports.DB_ROT_3_A, Ports.DB_ROT_3_B, clockwise, EncodingType.k4X);
+        DB_rot_encoders[3] = new TorqueEncoder(Ports.DB_ROT_4_A, Ports.DB_ROT_4_B, clockwise, EncodingType.k4X);
+
+        NX_gyro = new AHRS(SPI.Port.kMXP);
+        
+        NT_instance = NetworkTableInstance.getDefault();
+        NT_offsetEntry = NT_instance.getTable("limelight").getEntry("tx");
+    } // constructor 
+
+    public void update() {
+        updateEncoders();
+        updateNavX();
+    } // update
+
+
+    // ==================== Encoders ====================
+
+    // DB = drivebase, R = rotation
+    // robot front left = 1, front right = 2, back left = 3, back right = 4
+    private double[] DB_Rot_Raw = new double[4];
+    private double[] DB_Rot_Speed = new double[4];
+    private double[] DB_Rot_Angle = new double[4];
+
+    public void resetEncoders() {
+        resetDriveEncoders();
+    } // reset encoders ONLY at beginning of match
+
+    public void updateEncoders() {
+        updateDriveEncoders();
+    } // update all Encoders
+
+    // ---- Drivebase Rotation Encoders ----
+    
+    public void resetDriveEncoders(){
+        for(TorqueEncoder e : DB_rot_encoders){
+            e.reset();
+        }
+    } // reset drive encoders
+
+    public void updateDriveEncoders(){
+
+        for(TorqueEncoder e : DB_rot_encoders){
+            e.calc();
+        } // encoder.calc for all drive rotation encoders
+
+        // rotation gearing = 60:1, drive gearing = 44.4:1
+        
+        for(int x = 0; x < 4; x++){
+            DB_Rot_Raw[x] = DB_rot_encoders[x].get();
+        } // encoder.get() for all drive rotation encoders
+
+        for(int x = 0; x < 4; x++){
+            DB_Rot_Speed[x] = DB_rot_encoders[x].getRate() * DISTANCE_PER_PULSE;
+        } // update speeds for all drive rotation encoders
+        
+        // NEED SPECIFICS FROM BEN ON WHERE ENCODER IS GOING TO GO!!! THIS IS NOT FINAL!! NEED TO ADD MORE BASED ON THAT
+        for(int x = 0; x < 4; x++) {
+            DB_Rot_Angle[x] = DB_Rot_Raw[x] * ANGLE_PER_PULSE;
+        } // get angle at which each wheel has turned 
+
+    } // update drive encoders
+
+        // -------- module 0 = front left, 1 = front right, 2 = back left, 3 = back right --------
+    public double getRotSpeed(int module) {
+        return DB_Rot_Speed[module];
+    } // return rotation speed
+
+    public double getRotAngle(int module) {
+        return DB_Rot_Angle[module];
+    } // return rotation angle
+
+
+
+    // ========== Gyro ==========
+
+    private double NX_pitch;
+    private double NX_yaw;
+    private double NX_roll;
+
+    public void resetNavX() {
+        NX_gyro.reset();
+    } // resetNavX
+
+    public void updateNavX() {
+        NX_pitch = NX_gyro.getPitch();
+        NX_yaw = NX_gyro.getYaw();
+        NX_roll = NX_gyro.getRoll();
+    } // updateNavX (ONLY at BEGINNING of match, otherwise DO NOT USE)
+
+    public double getPitch() {
+        return NX_pitch;
+    } // getPitch
+
+    public double getYaw() {
+        return NX_yaw;
+    } // getYaw
+
+    public double getRoll() {
+        return NX_roll;
+    } // getRoll
+
+    public void zeroYaw() {
+        NX_gyro.zeroYaw();
+    } // zeroYaw    
+
+    // ===== RPi feedback from NetworkTables =====
+
+    private double NT_targetOffset;
+    private boolean NT_targetExists;
+
+    public void updateNetworkTables() {
+        NT_targetOffset = NT_offsetEntry.getDouble(0);
+        // NT_targetExists = NT_existsEntry.getBoolean(false);
+    }
+
+    public double getNTTargetOffset() {
+        return NT_targetOffset;
+    }
+
+    // ========= Other Stuff=============
+    
+    public void smartDashboard() {
+        // add whatever you want to display 
+    } // send stuff to smart dashboard
+
+    public static Feedback getInstance() {
+        if (instance == null) {
+            synchronized (Feedback.class) {
+                if (instance == null)
+                    instance = new Feedback();
+            }
+        }
+        return instance;
+    } // getInstance 
+} // Feedback

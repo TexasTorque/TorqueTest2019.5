@@ -3,6 +3,8 @@ package org.texastorque.subsystems;
 import org.texastorque.torquelib.component.TorqueMotor;
 import org.texastorque.torquelib.controlLoop.LowPassFilter;
 import org.texastorque.torquelib.controlLoop.ScheduledPID;
+import org.texastorque.inputs.Feedback;
+import org.texastorque.util.VectorUtils;
 
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANError;
@@ -15,6 +17,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class WheelModule {
 
+    private Feedback feedback;
+
     private TorqueMotor rotMot;
     private CANSparkMax transMot;
     private final CANEncoder DB_trans;
@@ -22,10 +26,10 @@ public class WheelModule {
     private double constM;
     private double constA;
 
-    private double setMag;
-    private double setAng;
-    private double currentMag;
-    private double currentAng;
+    private double setMag; // what magnitude needs to be set to
+    private double setAng; // what the angle needs to be set to
+    private double currentMag; // what the magnitude currently is
+    private double currentAng; // what the angle currently is
     private double prevMag;
     private double prevAng;
 
@@ -69,12 +73,34 @@ public class WheelModule {
         lowPassTrans = new LowPassFilter(0.5);
     } // constructor
 
-    public void calc(double transMag, double transTheta, double rotR){
-        
-        //setMag = 
-        // angle needs to be calculated by the end
-        // magnitude needs to be calculated by the end
-    } // calculate what values need to be, must be running continously 
+    public void calc(double transX, double transY, double rotR, double constAng){
+        double rotRX = calcRotRX(rotR, constAng);
+        double rotRY = calcRotRY(rotR, constAng);
+        setMag = VectorUtils.vectorAddition2DMagnitude(transX, transY, rotRX, rotRY);
+        setAng = VectorUtils.vectorAddition2DBearing(transX, transY, rotRX, rotRY);
+    } // calculate what values need to be, must be running continously
+
+    public double calcRotRX(double rotR, double constAng){ // questionable math, look at this later (check the signs of results)
+        double rotRcompX = 0;
+        if (arrayValue == 0 || arrayValue == 3){
+            rotRcompX = rotR*Math.toDegrees(Math.cos(constAng));
+        }
+        if (arrayValue == 1 || arrayValue == 2){
+            rotRcompX = rotR*Math.toDegrees(Math.sin(constAng));
+        }
+        return rotRcompX;
+    } // return the x component of the rotational vector
+
+    public double calcRotRY(double rotR, double constAng){ // questionable math pt. 2
+        double rotRcompY = 0;
+        if (arrayValue == 0 || arrayValue == 3){
+            rotRcompY = rotR*Math.toDegrees(Math.sin(constAng));
+        }
+        if (arrayValue == 1 || arrayValue == 2){
+            rotRcompY = rotR*Math.toDegrees(Math.cos(constAng));
+        }
+        return rotRcompY;
+    } // return the y component of the rotational vector
 
     public void setRotSpeed(double speed){
         rotSpeed = speed;
@@ -84,8 +110,13 @@ public class WheelModule {
         transSpeed = speed;
     } // set translational speed from the outside, DO NOT USE IN TELEOP
 
-    public void runRotationalPID(double angle){ // NOT GOOD <- FIX LATER
-        currentAng = lowPass.filter() // CHANGE TO GET THE CURRENT POSITION
+    public void outputMotorSpeeds(){
+        rotMot.set(rotSpeed);
+        transMot.set(transSpeed);
+    } // set the motor speeds to the correct numbers
+
+    public void RotationalPID(double angle){ // NOT GOOD <- FIX LATER
+        currentAng = lowPassRot.filter(feedback.getRotAngle(arrayValue));
         if (angle != currentAng){
             rotationalPID.changeSetpoint(angle);
             prevAng = angle;
@@ -93,18 +124,7 @@ public class WheelModule {
         rotSpeed = rotationalPID.calculate(currentAng);
     } // setWheelAngle
 
-    // private void runLiftPID(int position) {
-    //     setpoint = input.calcLFSetpoint(position);
-    //     currentPos = lowPass.filter(feedback.getLFPosition());
-    //     if (setpoint != prevSetpoint) {
-    //         liftPID.changeSetpoint(setpoint);
-    //         prevSetpoint = setpoint;
-    //     }
-
-    //     speed = liftPID.calculate(currentPos);
-    // }
-
-    public void runTranslationalPID(double distance){
+    public void runTranslationalPID(double distance){ // NEED TO FIX/WRITE THIS PID !!!!!!!!!
     } // FINISH THIS
 
 } // WheelModule

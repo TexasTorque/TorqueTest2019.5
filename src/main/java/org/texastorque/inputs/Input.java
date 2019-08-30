@@ -55,9 +55,12 @@ public class Input {
     private volatile double transMag = 0;
     private volatile double transTheta = 0;
 
+    // private volatile double rotX = 0;
+    // private volatile double rotY = 0;
+    private volatile double rotR = 0;
     private volatile double rotX = 0;
-    private volatile double rotY = 0;
-    private volatile double rotR = 0; 
+
+    private volatile boolean snapTo = false; 
 
     public void updateDrive() {
         transX = driver.getLeftXAxis();
@@ -65,17 +68,31 @@ public class Input {
         transMag = Math.hypot(transX, transY);
         transTheta = toBearing(Math.toDegrees(Math.atan2(transY, transX)));
 
-        rotX = driver.getRightXAxis();
-        rotY = -driver.getRightYAxis();
-        rotR = maintainDirection(Math.hypot(rotX, rotY), rotX);
+        rotR = driver.getRightXAxis();
+        //rotY = -driver.getRightYAxis();
+        //rotR = maintainDirection(Math.hypot(rotX, rotY), rotX);
+        snapTo = driver.getRightStickClick();
     } // updateDrive
 
     public void resetDrive() {
         transX = 0;
         transY = 0;
-        rotX = 0;
-        rotY = 0;
+        // rotX = 0;
+        // rotY = 0;
+        rotR = 0;
     } // resetDrive
+
+    public double getTransX() {
+        return transX;
+    } // return translational vector x component
+
+    public double getTransY() {
+        return transY;
+    } // return translational vector y component
+
+    public double getRotX() {
+        return rotX;
+    } // return translational vector x component
 
     public double getTransMag() {
         return transMag;
@@ -88,6 +105,10 @@ public class Input {
     public double getRotR(){
         return rotR;
     } // return the magnitude of rotation
+
+    public boolean getSnapTo(){
+        return snapTo;
+    } // return whether or not the robot is in snap to state (snap to = just turn to the correct direction)
 
     public double toBearing(double angle) {
         double bearing = 0;

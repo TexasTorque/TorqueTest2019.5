@@ -1,6 +1,7 @@
 package org.texastorque.subsystems;
 
 import org.texastorque.inputs.State.RobotState;
+import org.texastorque.inputs.Input;
 import org.texastorque.constants.Ports;
 import org.texastorque.torquelib.component.TorqueMotor;
 import org.texastorque.torquelib.controlLoop.ScheduledPID;
@@ -26,6 +27,8 @@ public class Drivebase extends Subsystem{
     private double transAngle = 0.0;
     private double rotMagnitude = 0.0;
     private double rotAngle = 0.0;
+    
+    public double[] constantAngles = {1, 1, 1, 1};
 
     private final boolean clockwise = false;
 
@@ -63,21 +66,27 @@ public class Drivebase extends Subsystem{
 
     @Override
     public void run(RobotState state) {
+        int count = 0;
         if(state == RobotState.AUTO){
             // put what to do in auto
         }
         else if(state == RobotState.TELEOP){
-
+            for (WheelModule m : modules){
+                m.calc(input.getTransX(), input.getTransY(), input.getRotR(), constantAngles[count]);
+            } // calculate values for each module continuously 
             // put what to do in teleop
         }
         else if(state == RobotState.VISION){
             // put what to do in vision
         }
+        output();
     } // run
 
     @Override
     protected void output() {
-        
+        for(WheelModule m : modules){
+            m.outputMotorSpeeds();
+        } // sets the motors speeds to the necessary values
     } // output
 
     @Override

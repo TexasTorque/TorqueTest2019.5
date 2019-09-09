@@ -26,10 +26,10 @@ public class WheelModule {
     private double constM;
     private double constA;
 
-    private double setMag; // what magnitude needs to be set to
-    private double setAng; // what the angle needs to be set to
-    private double currentMag; // what the magnitude currently is
-    private double currentAng; // what the angle currently is
+    private double setMag = 0; // what magnitude needs to be set to
+    private double setAng = 0; // what the angle needs to be set to
+    private double currentMag = 0; // what the magnitude currently is
+    private double currentAng = 0; // what the angle currently is
     private double prevMag;
     private double prevAng;
 
@@ -58,49 +58,54 @@ public class WheelModule {
         this.arrayValue = arrayValue;
 
         rotationalPID = new ScheduledPID.Builder(0, 0, 0, 0)
-            .setPGains(0)
+            .setPGains(.005)
             .setIGains(0)
             //.setDGains(0)
             .build();
 
-        translationalPID = new ScheduledPID.Builder(0, 0, 0, 0)
-            .setPGains(0)
-            .setIGains(0)
-            //.setDGains(0)
-            .build();
+        // translationalPID = new ScheduledPID.Builder(0, 0, 0, 0)
+        //     .setPGains(0)
+        //     .setIGains(0)
+        //     //.setDGains(0)
+        //     .build();
 
         lowPassRot = new LowPassFilter(0.5);  // if lag, change this number?  
         lowPassTrans = new LowPassFilter(0.5);
     } // constructor
 
     public void calc(double transX, double transY, double rotR, double constAng){
-        double rotRX = calcRotRX(rotR, constAng);
-        double rotRY = calcRotRY(rotR, constAng);
+        // double rotRX = calcRotRX(rotR, constAng);
+        // double rotRY = calcRotRY(rotR, constAng);
+        double rotRX = 0;
+        double rotRY = 0;
+        
         setMag = VectorUtils.vectorAddition2DMagnitude(transX, transY, rotRX, rotRY);
         setAng = VectorUtils.vectorAddition2DBearing(transX, transY, rotRX, rotRY);
+        RotationalPID(setAng);
+        transSpeed = setMag*.5;
     } // calculate what values need to be, must be running continously
 
-    public double calcRotRX(double rotR, double constAng){ // questionable math, look at this later (check the signs of results)
-        double rotRcompX = 0;
-        if (arrayValue == 0 || arrayValue == 3){
-            rotRcompX = rotR*Math.toDegrees(Math.cos(constAng));
-        }
-        if (arrayValue == 1 || arrayValue == 2){
-            rotRcompX = rotR*Math.toDegrees(Math.sin(constAng));
-        }
-        return rotRcompX;
-    } // return the x component of the rotational vector
+    // public double calcRotRX(double rotR, double constAng){ // questionable math, look at this later (check the signs of results)
+    //     double rotRcompX = 0;
+    //     if (arrayValue == 0 || arrayValue == 3){
+    //         rotRcompX = rotR*Math.toDegrees(Math.cos(constAng));
+    //     }
+    //     if (arrayValue == 1 || arrayValue == 2){
+    //         rotRcompX = rotR*Math.toDegrees(Math.sin(constAng));
+    //     }
+    //     return rotRcompX;
+    // } // return the x component of the rotational vector
 
-    public double calcRotRY(double rotR, double constAng){ // questionable math pt. 2
-        double rotRcompY = 0;
-        if (arrayValue == 0 || arrayValue == 3){
-            rotRcompY = rotR*Math.toDegrees(Math.sin(constAng));
-        }
-        if (arrayValue == 1 || arrayValue == 2){
-            rotRcompY = rotR*Math.toDegrees(Math.cos(constAng));
-        }
-        return rotRcompY;
-    } // return the y component of the rotational vector
+    // public double calcRotRY(double rotR, double constAng){ // questionable math pt. 2
+    //     double rotRcompY = 0;
+    //     if (arrayValue == 0 || arrayValue == 3){
+    //         rotRcompY = rotR*Math.toDegrees(Math.sin(constAng));
+    //     }
+    //     if (arrayValue == 1 || arrayValue == 2){
+    //         rotRcompY = rotR*Math.toDegrees(Math.cos(constAng));
+    //     }
+    //     return rotRcompY;
+    // } // return the y component of the rotational vector
 
     public void setRotSpeed(double speed){
         rotSpeed = speed;
@@ -109,6 +114,14 @@ public class WheelModule {
     public void setTransSpeed(double speed){
         transSpeed = speed;
     } // set translational speed from the outside, DO NOT USE IN TELEOP
+
+    public double getSetAng(){
+        return setAng;
+    }
+
+    public double getCurrentAng(){
+        return currentAng;
+    }
 
     public void outputMotorSpeeds(){
         rotMot.set(rotSpeed);
@@ -124,7 +137,7 @@ public class WheelModule {
         rotSpeed = rotationalPID.calculate(currentAng);
     } // setWheelAngle
 
-    public void runTranslationalPID(double distance){ // NEED TO FIX/WRITE THIS PID !!!!!!!!!
-    } // FINISH THIS
+    // public void runTranslationalPID(double distance){ // NEED TO FIX/WRITE THIS PID !!!!!!!!!
+    // } // FINISH THIS
 
 } // WheelModule

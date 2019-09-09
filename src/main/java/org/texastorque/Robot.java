@@ -35,9 +35,9 @@ public class Robot extends TorqueIterative {
 		feedback.resetNavX();
 		feedback.resetEncoders();
 
-		UsbCamera camera = CameraServer.getInstance().startAutomaticCapture();
-		camera.setResolution(320, 240);
-		camera.setFPS(16);
+		// UsbCamera camera = CameraServer.getInstance().startAutomaticCapture();
+		// camera.setResolution(320, 240);
+		// camera.setFPS(16);
 	} // robot is enabled
 
 	private void initSubsystems() {

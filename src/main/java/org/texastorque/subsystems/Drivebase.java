@@ -35,9 +35,9 @@ public class Drivebase extends Subsystem{
 
     private Drivebase() {
         modules[0] = new WheelModule(Ports.TRANS_1, Ports.ROT_1, 45, 45, 0);
-        modules[1] = new WheelModule(Ports.TRANS_2, Ports.ROT_2, 45, 135, 1);
-        modules[2] = new WheelModule(Ports.TRANS_3, Ports.ROT_2, 45, 225, 2);
-        modules[3] = new WheelModule(Ports.TRANS_4, Ports.TRANS_4, 45, 315, 3);
+        // modules[1] = new WheelModule(Ports.TRANS_2, Ports.ROT_2, 45, 135, 1);
+        // modules[2] = new WheelModule(Ports.TRANS_3, Ports.ROT_2, 45, 225, 2);
+        // modules[3] = new WheelModule(Ports.TRANS_4, Ports.TRANS_4, 45, 315, 3);
     } // constructor
 
     @Override
@@ -73,6 +73,7 @@ public class Drivebase extends Subsystem{
         else if(state == RobotState.TELEOP){
             for (WheelModule m : modules){
                 m.calc(input.getTransX(), input.getTransY(), input.getRotR(), constantAngles[count]);
+                m.outputMotorSpeeds();
             } // calculate values for each module continuously 
             // put what to do in teleop
         }
@@ -99,7 +100,10 @@ public class Drivebase extends Subsystem{
     public void teleopContinuous() {}
 
     @Override
-    public void smartDashboard() {} // whatever stuff you want to display
+    public void smartDashboard() {
+        SmartDashboard.putNumber("Current Angle", modules[0].getCurrentAng());
+        SmartDashboard.putNumber("Set Angle", modules[0].getSetAng());
+    } // whatever stuff you want to display
 
     public static Drivebase getInstance() {
         if (instance == null) {

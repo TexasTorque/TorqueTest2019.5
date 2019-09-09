@@ -33,6 +33,8 @@ public class WheelModule {
     private double prevMag;
     private double prevAng;
 
+    private double transConversionFactor = 1;
+
     private ScheduledPID rotationalPID;
     private ScheduledPID translationalPID;
 

@@ -34,10 +34,17 @@ public class Drivebase extends Subsystem{
 
 
     private Drivebase() {
+<<<<<<< Updated upstream
         modules[0] = new WheelModule(Ports.TRANS_1, Ports.ROT_1, 45, 45, 0);
         modules[1] = new WheelModule(Ports.TRANS_2, Ports.ROT_2, 45, 135, 1);
         modules[2] = new WheelModule(Ports.TRANS_3, Ports.ROT_2, 45, 225, 2);
         modules[3] = new WheelModule(Ports.TRANS_4, Ports.TRANS_4, 45, 315, 3);
+=======
+        modules[0] = new WheelModule(Ports.TRANS_1, Ports.ROT_1, 8, 45, 0);
+        // modules[1] = new WheelModule(Ports.TRANS_2, Ports.ROT_2, 45, 135, 1);
+        // modules[2] = new WheelModule(Ports.TRANS_3, Ports.ROT_2, 45, 225, 2);
+        // modules[3] = new WheelModule(Ports.TRANS_4, Ports.TRANS_4, 45, 315, 3);
+>>>>>>> Stashed changes
     } // constructor
 
     @Override
@@ -72,6 +79,8 @@ public class Drivebase extends Subsystem{
         }
         else if(state == RobotState.TELEOP){
             for (WheelModule m : modules){
+                SmartDashboard.putNumber("transYInput", input.getTransY());
+                SmartDashboard.putNumber("rotRInput", input.getRotR());
                 m.calc(input.getTransX(), input.getTransY(), input.getRotR(), constantAngles[count]);
             } // calculate values for each module continuously 
             // put what to do in teleop
@@ -87,6 +96,7 @@ public class Drivebase extends Subsystem{
         for(WheelModule m : modules){
             m.outputMotorSpeeds();
         } // sets the motors speeds to the necessary values
+        smartDashboard();
     } // output
 
     @Override

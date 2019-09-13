@@ -16,27 +16,20 @@ public class Ports {
     public static final int ROT_3 = isSwerve ? 7 : 0;
     public static final int ROT_4 = isSwerve ? 8 : 0;
 
-    public static final int ENCODER_A = 0;
-    public static final int ENCODER_B = 0;
-
     // ============ drivebase rotation encoders ===========
 
     // db = drivebase, rot = rotation
     public static final int DB_ROT_1_A = 0;
-    public static final int DB_ROT_1_B = 0;
+    public static final int DB_ROT_1_B = 1;
 
-    public static final int DB_ROT_2_A = 0;
-    public static final int DB_ROT_2_B = 0;
+    // public static final int DB_ROT_2_A = 0;
+    // public static final int DB_ROT_2_B = 0;
     
-    public static final int DB_ROT_3_A = 0;
-    public static final int DB_ROT_3_B = 0;
+    // public static final int DB_ROT_3_A = 0;
+    // public static final int DB_ROT_3_B = 0;
     
-    public static final int DB_ROT_4_A = 0;
-    public static final int DB_ROT_4_B = 0;
-
-    // =========== pneumatics ==============
-    public static final int SOLE_A = 0;
-    public static final int SOLE_B = 0;
+    // public static final int DB_ROT_4_A = 0;
+    // public static final int DB_ROT_4_B = 0;
 
     // Sensors
 

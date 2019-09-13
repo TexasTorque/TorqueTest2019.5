@@ -37,9 +37,9 @@ public class Feedback {
     
     private Feedback() {
         DB_rot_encoders[0] = new TorqueEncoder(Ports.DB_ROT_1_A, Ports.DB_ROT_1_B, clockwise, EncodingType.k4X);
-        DB_rot_encoders[1] = new TorqueEncoder(Ports.DB_ROT_2_A, Ports.DB_ROT_2_B, clockwise, EncodingType.k4X);
-        DB_rot_encoders[2] = new TorqueEncoder(Ports.DB_ROT_3_A, Ports.DB_ROT_3_B, clockwise, EncodingType.k4X);
-        DB_rot_encoders[3] = new TorqueEncoder(Ports.DB_ROT_4_A, Ports.DB_ROT_4_B, clockwise, EncodingType.k4X);
+        // DB_rot_encoders[1] = new TorqueEncoder(Ports.DB_ROT_2_A, Ports.DB_ROT_2_B, clockwise, EncodingType.k4X);
+        // DB_rot_encoders[2] = new TorqueEncoder(Ports.DB_ROT_3_A, Ports.DB_ROT_3_B, clockwise, EncodingType.k4X);
+        // DB_rot_encoders[3] = new TorqueEncoder(Ports.DB_ROT_4_A, Ports.DB_ROT_4_B, clockwise, EncodingType.k4X);
 
         NX_gyro = new AHRS(SPI.Port.kMXP);
         
@@ -50,6 +50,7 @@ public class Feedback {
     public void update() {
         updateEncoders();
         updateNavX();
+        updateNetworkTables();
     } // update
 
 
@@ -57,9 +58,9 @@ public class Feedback {
 
     // DB = drivebase, R = rotation
     // robot front left = 1, front right = 2, back left = 3, back right = 4
-    private double[] DB_Rot_Raw = new double[4];
-    private double[] DB_Rot_Speed = new double[4];
-    private double[] DB_Rot_Angle = new double[4];
+    private double[] DB_Rot_Raw = new double[1];
+    private double[] DB_Rot_Speed = new double[1];
+    private double[] DB_Rot_Angle = new double[1];
 
     public void resetEncoders() {
         resetDriveEncoders();
@@ -72,9 +73,10 @@ public class Feedback {
     // ---- Drivebase Rotation Encoders ----
     
     public void resetDriveEncoders(){
-        for(TorqueEncoder e : DB_rot_encoders){
-            e.reset();
-        }
+        // for(TorqueEncoder e : DB_rot_encoders){
+        //     e.reset();
+        // }
+        DB_rot_encoders[0].reset();
     } // reset drive encoders
 
     public void updateDriveEncoders(){
@@ -95,7 +97,7 @@ public class Feedback {
         
         // NEED SPECIFICS FROM BEN ON WHERE ENCODER IS GOING TO GO!!! THIS IS NOT FINAL!! NEED TO ADD MORE BASED ON THAT
         for(int x = 0; x < 4; x++) {
-            DB_Rot_Angle[x] = DB_Rot_Raw[x] * ANGLE_PER_PULSE;
+            DB_Rot_Angle[x] = DB_Rot_Raw[x] * 2.8;
         } // get angle at which each wheel has turned 
 
     } // update drive encoders
@@ -150,6 +152,7 @@ public class Feedback {
 
     public void updateNetworkTables() {
         NT_targetOffset = NT_offsetEntry.getDouble(0);
+        smartDashboard();
         // NT_targetExists = NT_existsEntry.getBoolean(false);
     }
 
@@ -161,6 +164,9 @@ public class Feedback {
     
     public void smartDashboard() {
         // add whatever you want to display 
+        SmartDashboard.putNumber("Pitch", getPitch());
+        SmartDashboard.putNumber("Roll", getRoll());
+        SmartDashboard.putNumber("Yaw", getYaw());
     } // send stuff to smart dashboard
 
     public static Feedback getInstance() {

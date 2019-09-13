@@ -62,13 +62,8 @@ public class WheelModule {
         constA = moduleAngle;
         this.arrayValue = arrayValue;
 
-<<<<<<< Updated upstream
-        rotationalPID = new ScheduledPID.Builder(0, 0, 0, 0)
-            .setPGains(0)
-=======
         rotationalPID = new ScheduledPID.Builder(0, 0, 1, 1)
             .setPGains(.005)
->>>>>>> Stashed changes
             .setIGains(0)
             //.setDGains(0)
             .build();
@@ -87,13 +82,9 @@ public class WheelModule {
         double rotRX = calcRotRX(rotR, constAng);
         double rotRY = calcRotRY(rotR, constAng);
         setMag = VectorUtils.vectorAddition2DMagnitude(transX, transY, rotRX, rotRY);
-<<<<<<< Updated upstream
-        setAng = VectorUtils.vectorAddition2DBearing(transX, transY, rotRX, rotRY);
-=======
         setAng = VectorUtils.vectorAddition2DBearing(transX, transY, rotRX, rotRY) + feedback.getYaw();
         RotationalPID(setAng);
         transSpeed = setMag*.5;
->>>>>>> Stashed changes
     } // calculate what values need to be, must be running continously
 
     public double calcRotRX(double rotR, double constAng){ // questionable math, look at this later (check the signs of results)

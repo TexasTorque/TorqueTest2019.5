@@ -63,16 +63,16 @@ public class WheelModule {
         this.arrayValue = arrayValue;
 
         rotationalPID = new ScheduledPID.Builder(0, 0, 1, 1)
-            .setPGains(.005)
-            .setIGains(0)
-            //.setDGains(0)
-            .build();
-
-        translationalPID = new ScheduledPID.Builder(0, 0, 0, 0)
             .setPGains(0)
             .setIGains(0)
             //.setDGains(0)
             .build();
+
+        // translationalPID = new ScheduledPID.Builder(0, 0, 0, 0)
+        //     .setPGains(0)
+        //     .setIGains(0)
+        //     //.setDGains(0)
+        //     .build();
 
         lowPassRot = new LowPassFilter(0.5);  // if lag, change this number?  
         lowPassTrans = new LowPassFilter(0.5);
@@ -122,6 +122,7 @@ public class WheelModule {
         SmartDashboard.putNumber("transSpeedInput", transSpeed);
         rotMot.set(rotSpeed);
         transMot.set(transSpeed);
+        SmartDashboard.putNumber("Test17", 27);
     } // set the motor speeds to the correct numbers
 
     public void RotationalPID(double angle){ // NOT GOOD <- FIX LATER
@@ -133,7 +134,7 @@ public class WheelModule {
         rotSpeed = rotationalPID.calculate(currentAng);
     } // setWheelAngle
 
-    public void runTranslationalPID(double distance){ // NEED TO FIX/WRITE THIS PID !!!!!!!!!
-    } // FINISH THIS
+    // public void runTranslationalPID(double distance){ // NEED TO FIX/WRITE THIS PID !!!!!!!!!
+    // } // FINISH THIS
 
 } // WheelModule

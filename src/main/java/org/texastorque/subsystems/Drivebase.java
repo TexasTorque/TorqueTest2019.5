@@ -1,5 +1,6 @@
 package org.texastorque.subsystems;
 
+import java.util.ArrayList;
 import org.texastorque.inputs.State.RobotState;
 import org.texastorque.inputs.Input;
 import org.texastorque.constants.Ports;
@@ -21,7 +22,8 @@ public class Drivebase extends Subsystem{
     private static volatile Drivebase instance;
 
     // modules[0] = front left, modules[1] = front right, modules[2] = back left, modules[3] = back right
-    private WheelModule[] modules = new WheelModule[4];
+    // private WheelModule[] modules = new WheelModule[0];
+    private ArrayList<WheelModule> modules = new ArrayList<WheelModule>();
 
     private double transMagnitude = 0.0;
     private double transAngle = 0.0;
@@ -34,7 +36,7 @@ public class Drivebase extends Subsystem{
 
 
     private Drivebase() {
-        modules[0] = new WheelModule(Ports.TRANS_1, Ports.ROT_1, 8, 45, 0);
+        modules.add(new WheelModule(Ports.TRANS_1, Ports.ROT_1, 8, 45, 0));
         // modules[1] = new WheelModule(Ports.TRANS_2, Ports.ROT_2, 45, 135, 1);
         // modules[2] = new WheelModule(Ports.TRANS_3, Ports.ROT_2, 45, 225, 2);
         // modules[3] = new WheelModule(Ports.TRANS_4, Ports.TRANS_4, 45, 315, 3);
@@ -50,10 +52,15 @@ public class Drivebase extends Subsystem{
 
     @Override
     public void teleopInit() {
+        SmartDashboard.putNumber("Test10", 20);
         for (WheelModule m : modules){
+            SmartDashboard.putNumber("Test30", 1);
             m.setRotSpeed(0);
+            SmartDashboard.putNumber("Test31", 1);
             m.setTransSpeed(0);
+
         } // set to 0 at start of auton
+        SmartDashboard.putNumber("Test11", 21);
     } // what to do when teleop is initialized
 
     @Override
@@ -67,17 +74,20 @@ public class Drivebase extends Subsystem{
     @Override
     public void run(RobotState state) {
         int count = 0;
+        SmartDashboard.putNumber("Test35", 1);
         if(state == RobotState.AUTO){
             // put what to do in auto
         }
         else if(state == RobotState.TELEOP){
+            SmartDashboard.putNumber("Test13", 23);
             for (WheelModule m : modules){
+                SmartDashboard.putNumber("Test14", 24);
                 SmartDashboard.putNumber("transYInput", input.getTransY());
                 SmartDashboard.putNumber("rotRInput", input.getRotR());
                 m.calc(input.getTransX(), input.getTransY(), input.getRotR(), constantAngles[count]);
+                SmartDashboard.putNumber("Test15", 25);
             } // calculate values for each module continuously 
-            // put what to do in teleop
-        }
+        } // put what to do in teleop
         else if(state == RobotState.VISION){
             // put what to do in vision
         }
@@ -86,10 +96,10 @@ public class Drivebase extends Subsystem{
 
     @Override
     protected void output() {
+        SmartDashboard.putNumber("Test16", 26);
         for(WheelModule m : modules){
             m.outputMotorSpeeds();
         } // sets the motors speeds to the necessary values
-        smartDashboard();
     } // output
 
     @Override

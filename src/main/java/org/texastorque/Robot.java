@@ -71,7 +71,7 @@ public class Robot extends TorqueIterative {
 		} // set all subsystems to teleop
 		SmartDashboard.putNumber("Test37", 1);
 		SmartDashboard.putNumber("Disabled1", 0);
-		
+		SmartDashboard.putString("RobotState", state.getRobotStateString());
 	} // teleop start
 
 	@Override

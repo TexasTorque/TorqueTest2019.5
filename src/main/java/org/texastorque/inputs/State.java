@@ -13,6 +13,10 @@ public class State {
         return robotState;
     }
 
+    public String getRobotStateString(){
+        return robotState.toString();
+    }
+
     public void setRobotState(RobotState state) {
         synchronized (this) {
             this.robotState = state;

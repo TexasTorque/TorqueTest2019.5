@@ -30,7 +30,7 @@ public class Drivebase extends Subsystem{
     private double rotMagnitude = 0.0;
     private double rotAngle = 0.0;
     
-    public double[] constantAngles = {1, 1, 1, 1};
+    public double[] constantAngles = {45, 1, 1, 1};
 
     private final boolean clockwise = false;
 
@@ -84,7 +84,11 @@ public class Drivebase extends Subsystem{
                 SmartDashboard.putNumber("Test14", 24);
                 SmartDashboard.putNumber("transYInput", input.getTransY());
                 SmartDashboard.putNumber("rotRInput", input.getRotR());
-                m.calc(input.getTransX(), input.getTransY(), input.getRotR(), constantAngles[count]);
+                try {
+                    m.calc(input.getTransX(), input.getTransY(), input.getRotR(), constantAngles[count]);   
+                } catch (Exception e) {
+                    SmartDashboard.putString("CalcException", e.getMessage());
+                }
                 SmartDashboard.putNumber("Test15", 25);
             } // calculate values for each module continuously 
         } // put what to do in teleop

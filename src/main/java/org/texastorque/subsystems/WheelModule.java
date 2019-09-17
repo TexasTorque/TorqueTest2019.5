@@ -79,11 +79,16 @@ public class WheelModule {
     } // constructor
 
     public void calc(double transX, double transY, double rotR, double constAng){
+        SmartDashboard.putNumber("Test45", 45);
         double rotRX = calcRotRX(rotR, constAng);
         double rotRY = calcRotRY(rotR, constAng);
+        SmartDashboard.putNumber("Test46", 46);
         setMag = VectorUtils.vectorAddition2DMagnitude(transX, transY, rotRX, rotRY);
-        setAng = VectorUtils.vectorAddition2DBearing(transX, transY, rotRX, rotRY) + feedback.getYaw();
+        SmartDashboard.putNumber("Check1", 75);
+        setAng = VectorUtils.vectorAddition2DBearing(transX, transY, rotRX, rotRY); //+ feedback.getYaw();
+        SmartDashboard.putNumber("Test47", 47);
         RotationalPID(setAng);
+        SmartDashboard.putNumber("Test84", 84);
         transSpeed = setMag*.5;
     } // calculate what values need to be, must be running continously
 
@@ -126,10 +131,15 @@ public class WheelModule {
     } // set the motor speeds to the correct numbers
 
     public void RotationalPID(double angle){ // NOT GOOD <- FIX LATER
-        currentAng = lowPassRot.filter(feedback.getRotAngle(arrayValue));
+        SmartDashboard.putNumber("Test96", 0);
+        currentAng = feedback.getRotAngle(0);
+        SmartDashboard.putNumber("Test96", 100);
         if (angle != currentAng){
+            SmartDashboard.putNumber("Test91", angle);
             rotationalPID.changeSetpoint(angle);
+            SmartDashboard.putNumber("Test92", 92);
             prevAng = angle;
+            SmartDashboard.putNumber("Test92", prevAng);
         } // if not already there, go to the correct position
         rotSpeed = rotationalPID.calculate(currentAng);
     } // setWheelAngle

@@ -1,5 +1,7 @@
 package org.texastorque.inputs;
 
+import java.util.ArrayList;
+
 import org.texastorque.constants.*;
 import org.texastorque.torquelib.component.TorqueEncoder;
 
@@ -25,7 +27,8 @@ public class Feedback {
     public final double FEET_CONVERSION = Math.PI * (1.0/20) / Constants.PULSES_PER_ROTATION; // Using approximate shaft diameter
 
     // Sensors
-    private final TorqueEncoder[] DB_rot_encoders= new TorqueEncoder[4];
+    //private final TorqueEncoder[] DB_rot_encoders= new TorqueEncoder[4];
+    private final ArrayList<TorqueEncoder> DB_rot_encoders = new ArrayList<TorqueEncoder>();
 
     private final AHRS NX_gyro;
 
@@ -36,7 +39,7 @@ public class Feedback {
     private NetworkTableEntry NT_offsetEntry;
     
     private Feedback() {
-        DB_rot_encoders[0] = new TorqueEncoder(Ports.DB_ROT_1_A, Ports.DB_ROT_1_B, clockwise, EncodingType.k4X);
+        DB_rot_encoders.add(new TorqueEncoder(Ports.DB_ROT_1_A, Ports.DB_ROT_1_B, clockwise, EncodingType.k4X));
         // DB_rot_encoders[1] = new TorqueEncoder(Ports.DB_ROT_2_A, Ports.DB_ROT_2_B, clockwise, EncodingType.k4X);
         // DB_rot_encoders[2] = new TorqueEncoder(Ports.DB_ROT_3_A, Ports.DB_ROT_3_B, clockwise, EncodingType.k4X);
         // DB_rot_encoders[3] = new TorqueEncoder(Ports.DB_ROT_4_A, Ports.DB_ROT_4_B, clockwise, EncodingType.k4X);
@@ -76,7 +79,7 @@ public class Feedback {
         // for(TorqueEncoder e : DB_rot_encoders){
         //     e.reset();
         // }
-        DB_rot_encoders[0].reset();
+        DB_rot_encoders.get(0).reset();
     } // reset drive encoders
 
     public void updateDriveEncoders(){
@@ -86,20 +89,21 @@ public class Feedback {
         } // encoder.calc for all drive rotation encoders
 
         // rotation gearing = 60:1, drive gearing = 44.4:1
-        
-        for(int x = 0; x < 4; x++){
-            DB_Rot_Raw[x] = DB_rot_encoders[x].get();
-        } // encoder.get() for all drive rotation encoders
-
-        for(int x = 0; x < 4; x++){
-            DB_Rot_Speed[x] = DB_rot_encoders[x].getRate() * DISTANCE_PER_PULSE;
-        } // update speeds for all drive rotation encoders
-        
+        SmartDashboard.putNumber("torque", 1);
+        //for(int x = 0; x < 1; x++){
+            //DB_Rot_Raw[x] = DB_rot_encoders[x].get();
+            DB_Rot_Raw[0] = DB_rot_encoders.get(0).get();
+        //} // encoder.get() for all drive rotation encoders
+        SmartDashboard.putNumber("torque", 2);
+        //for(int x = 0; x < 1; x++){
+            DB_Rot_Speed[0] = DB_rot_encoders.get(0).getRate() * DISTANCE_PER_PULSE;
+        //} // update speeds for all drive rotation encoders
+        SmartDashboard.putNumber("torque", 3);
         // NEED SPECIFICS FROM BEN ON WHERE ENCODER IS GOING TO GO!!! THIS IS NOT FINAL!! NEED TO ADD MORE BASED ON THAT
-        for(int x = 0; x < 4; x++) {
-            DB_Rot_Angle[x] = DB_Rot_Raw[x] * 2.8;
-        } // get angle at which each wheel has turned 
-
+        //for(int x = 0; x < 1; x++) {
+            DB_Rot_Angle[0] = DB_Rot_Raw[0] * 2.8;
+        //} // get angle at which each wheel has turned 
+        SmartDashboard.putNumber("torque", 4);
     } // update drive encoders
 
         // -------- module 0 = front left, 1 = front right, 2 = back left, 3 = back right --------
@@ -108,7 +112,8 @@ public class Feedback {
     } // return rotation speed
 
     public double getRotAngle(int module) {
-        return DB_Rot_Angle[module];
+        //return DB_Rot_Angle[module];
+        return DB_Rot_Angle[0];
     } // return rotation angle
 
 
@@ -167,6 +172,7 @@ public class Feedback {
         SmartDashboard.putNumber("Pitch", getPitch());
         SmartDashboard.putNumber("Roll", getRoll());
         SmartDashboard.putNumber("Yaw", getYaw());
+        SmartDashboard.putNumber("NUMBER", DB_Rot_Angle[0]);
     } // send stuff to smart dashboard
 
     public static Feedback getInstance() {

@@ -147,7 +147,8 @@ public abstract class TorqueIterative extends RobotBase {
 					}
 					if (nextPeriodReady()) {
 						HAL.observeUserProgramTeleop();
-						teleopPeriodic();
+						//teleopPeriodic();
+						teleopContinuous();
 					}
 				}
 				m_ds.waitForData();

@@ -2,6 +2,8 @@
 
 package org.texastorque.util;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 public class VectorUtils {
 
     private static volatile double magX;
@@ -12,14 +14,25 @@ public class VectorUtils {
     public static double vectorAddition2DBearing(double magX1, double magY1, double magX2, double magY2){
         magX = magX1 + magX2;
         magY = magY1 + magY2;
-        bearing = toBearing(Math.toDegrees(Math.atan2(magY, magX)));
+        bearing = Math.toDegrees(Math.atan2(magY, magX));
+        SmartDashboard.putNumber("CheckBearing", bearing);
+        // try {
+        // //    bearing = toBearing(Math.toDegrees(Math.atan2(magY, magX)));   
+        //     bearing = Math.atan2(magY, magX);
+        //  } catch (Exception e) {
+        //      SmartDashboard.putString("vectoradditionexception", "errorBearing");
+        // }
         return bearing;
     } // vector Addition 2D return bearing of final vector
 
     public static double vectorAddition2DMagnitude(double magX1, double magY1, double magX2, double magY2){
         magX = magX1 + magX2;
         magY = magY1 + magY2;
-        mag = Math.hypot(magX, magY);
+        try {
+            mag = Math.hypot(magX, magY);   
+        } catch (Exception e) {
+            SmartDashboard.putString("vectoradditionexceptionMAG", "errorBearing");
+        }
         return mag;
     } // vector addition 2d return magnitude of final vector
 

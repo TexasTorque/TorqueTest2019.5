@@ -25,7 +25,7 @@ public class Feedback {
     public final double FEET_CONVERSION = Math.PI * (1.0/20) / Constants.PULSES_PER_ROTATION; // Using approximate shaft diameter
 
     // Sensors
-    private final TorqueEncoder[] DB_rot_encoders= new TorqueEncoder[4];
+    private final TorqueEncoder[] DB_rot_encoders= new TorqueEncoder[1];
 
     private final AHRS NX_gyro;
 
@@ -87,16 +87,16 @@ public class Feedback {
 
         // rotation gearing = 60:1, drive gearing = 44.4:1
         
-        for(int x = 0; x < 4; x++){
+        for(int x = 0; x < 1; x++){
             DB_Rot_Raw[x] = DB_rot_encoders[x].get();
         } // encoder.get() for all drive rotation encoders
 
-        for(int x = 0; x < 4; x++){
+        for(int x = 0; x < 1; x++){
             DB_Rot_Speed[x] = DB_rot_encoders[x].getRate() * DISTANCE_PER_PULSE;
         } // update speeds for all drive rotation encoders
         
         // NEED SPECIFICS FROM BEN ON WHERE ENCODER IS GOING TO GO!!! THIS IS NOT FINAL!! NEED TO ADD MORE BASED ON THAT
-        for(int x = 0; x < 4; x++) {
+        for(int x = 0; x < 1; x++) {
             DB_Rot_Angle[x] = DB_Rot_Raw[x] * 2.8;
         } // get angle at which each wheel has turned 
 

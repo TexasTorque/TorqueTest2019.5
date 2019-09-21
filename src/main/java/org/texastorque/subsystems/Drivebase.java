@@ -1,6 +1,7 @@
 package org.texastorque.subsystems;
 
 import java.util.ArrayList;
+import java.util.Random;
 import org.texastorque.inputs.State.RobotState;
 import org.texastorque.inputs.Input;
 import org.texastorque.constants.Ports;
@@ -33,6 +34,7 @@ public class Drivebase extends Subsystem{
     public double[] constantAngles = {1, 1, 1, 1};
 
     private final boolean clockwise = false;
+    private Random rand = new Random();
 
 
     private Drivebase() {
@@ -52,11 +54,11 @@ public class Drivebase extends Subsystem{
 
     @Override
     public void teleopInit() {
-        SmartDashboard.putNumber("Test10", 20);
+        SmartDashboard.putNumber("Drivebase teleopInit", 20);
         for (WheelModule m : modules){
-            SmartDashboard.putNumber("Test30", 1);
+            SmartDashboard.putNumber("Drivebase for module", 1);
             m.setRotSpeed(0);
-            SmartDashboard.putNumber("Test31", 1);
+            SmartDashboard.putNumber("Drivebase for module 2", 1);
             m.setTransSpeed(0);
 
         } // set to 0 at start of auton
@@ -74,19 +76,25 @@ public class Drivebase extends Subsystem{
     @Override
     public void run(RobotState state) {
         int count = 0;
-        SmartDashboard.putNumber("Test35", 1);
+        SmartDashboard.putNumber("Drivebase.run start", rand.nextInt());
         if(state == RobotState.AUTO){
             // put what to do in auto
         }
         else if(state == RobotState.TELEOP){
-            SmartDashboard.putNumber("Test13", 23);
-            for (WheelModule m : modules){
-                SmartDashboard.putNumber("Test14", 24);
-                SmartDashboard.putNumber("transYInput", input.getTransY());
-                SmartDashboard.putNumber("rotRInput", input.getRotR());
-                m.calc(input.getTransX(), input.getTransY(), input.getRotR(), constantAngles[count]);
-                SmartDashboard.putNumber("Test15", 25);
-            } // calculate values for each module continuously 
+            try{
+                SmartDashboard.putNumber("Drivebase.run teleop", rand.nextInt());
+                for (WheelModule m : modules){
+                    SmartDashboard.putNumber("Drivebase.run teleop.for", rand.nextInt() );
+                    SmartDashboard.putNumber("Drivebase.run transYInput", input.getTransY());
+                    SmartDashboard.putNumber("Drivebase.run rotRInput", input.getRotR());
+                    m.calc(input.getTransX(), input.getTransY(), input.getRotR(), constantAngles[count]);
+                    SmartDashboard.putNumber("Drivebase.run teleop.endfor", rand.nextInt());
+                } // calculate values for each module continuously 
+            }
+            catch(Exception e){
+                System.out.println("Run exception tostring: " + e.toString());
+                System.out.println("Run exception message: " + e.getMessage());
+            }
         } // put what to do in teleop
         else if(state == RobotState.VISION){
             // put what to do in vision
@@ -96,7 +104,7 @@ public class Drivebase extends Subsystem{
 
     @Override
     protected void output() {
-        SmartDashboard.putNumber("Test16", 26);
+        SmartDashboard.putNumber("Drivebase output", 26);
         for(WheelModule m : modules){
             m.outputMotorSpeeds();
         } // sets the motors speeds to the necessary values

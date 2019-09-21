@@ -87,17 +87,33 @@ public class Feedback {
 
         // rotation gearing = 60:1, drive gearing = 44.4:1
         
-        for(int x = 0; x < 1; x++){
-            DB_Rot_Raw[x] = DB_rot_encoders[x].get();
+        for(int x = 0; x <= 1; x++){
+            try{
+                DB_Rot_Raw[x] = DB_rot_encoders[x].get();
+            }
+            catch(Exception e){
+                System.out.println("Feedback updateDriveEncoders db_rot_raw: " + x);
+            }
         } // encoder.get() for all drive rotation encoders
 
-        for(int x = 0; x < 1; x++){
-            DB_Rot_Speed[x] = DB_rot_encoders[x].getRate() * DISTANCE_PER_PULSE;
+        for(int x = 0; x <= 1; x++){
+            try{
+                DB_Rot_Speed[x] = DB_rot_encoders[x].getRate() * DISTANCE_PER_PULSE;
+            }
+            catch(Exception e){
+                System.out.println("Feedback updateDriveEncoders db_rot_speed: " + x);
+            }
+            
         } // update speeds for all drive rotation encoders
         
         // NEED SPECIFICS FROM BEN ON WHERE ENCODER IS GOING TO GO!!! THIS IS NOT FINAL!! NEED TO ADD MORE BASED ON THAT
-        for(int x = 0; x < 1; x++) {
-            DB_Rot_Angle[x] = DB_Rot_Raw[x] * 2.8;
+        for(int x = 0; x <= 1; x++) {
+            try{
+                DB_Rot_Angle[x] = DB_Rot_Raw[x] * 2.8;
+            }
+            catch(Exception e){
+                System.out.println("Feedback updateDriveEncoders db_rot_angle: " + x);
+            }
         } // get angle at which each wheel has turned 
 
     } // update drive encoders
@@ -108,6 +124,7 @@ public class Feedback {
     } // return rotation speed
 
     public double getRotAngle(int module) {
+        System.out.println("Feedback getRotAngle: " + DB_Rot_Angle.length);
         return DB_Rot_Angle[module];
     } // return rotation angle
 

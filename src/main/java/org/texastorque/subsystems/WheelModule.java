@@ -165,14 +165,18 @@ public class WheelModule {
                 rotAngle = feedback.getRotAngle(arrayValue);
             } 
             catch(Exception e){
+                System.out.println("WheelModule.RotationalPID rotAngle: " + e.toString());
                 rotAngle = 0;
             }
 
             SmartDashboard.putNumber("WheelModule.RotationalPID rotAngle", rotAngle);
+
+            
             try{
                 currentAng = lowPassRot.filter(rotAngle);
             }
             catch(Exception e){
+                System.out.println("WheelModule.RotationalPID currentAng: " + e.toString());
                 currentAng = 0;
             }
             

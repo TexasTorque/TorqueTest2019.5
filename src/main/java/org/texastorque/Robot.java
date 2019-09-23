@@ -10,6 +10,7 @@ import org.texastorque.torquelib.base.TorqueIterative;
 
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -24,9 +25,10 @@ public class Robot extends TorqueIterative {
 	private State state = State.getInstance();
 	private Input input = Input.getInstance();
 	private Feedback feedback = Feedback.getInstance();
-	private AutoManager autoManager = AutoManager.getInstance();
+	// private AutoManager autoManager = AutoManager.getInstance();
 
 	public void robotInit() {
+		
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		Date date = new Date();
 		System.out.println("Init time: " + dateFormat.format(date));
@@ -34,7 +36,7 @@ public class Robot extends TorqueIterative {
 		initSubsystems();
 		feedback.resetNavX();
 		feedback.resetEncoders();
-
+		SmartDashboard.putNumber("Test", 15);
 		// UsbCamera camera = CameraServer.getInstance().startAutomaticCapture();
 		// camera.setResolution(320, 240);
 		// camera.setFPS(16);
@@ -43,46 +45,53 @@ public class Robot extends TorqueIterative {
 	private void initSubsystems() {
 		subsystems = new ArrayList<Subsystem>();
 		subsystems.add(driveBase);
+		SmartDashboard.putNumber("Test1", 16);
 		//subsystems.add(subsystemName);
 	} // initialize subsystems 
 
-	@Override
-	public void autoInit() {
-		state.setRobotState(RobotState.AUTO);
-		autoManager.chooseSequence();
-		feedback.resetEncoders();
-		input.resetAll();
+	// @Override
+	// public void autoInit() {
+	// 	state.setRobotState(RobotState.AUTO);
+	// 	autoManager.chooseSequence();
+	// 	feedback.resetEncoders();
+	// 	input.resetAll();
 
-		for (Subsystem system : subsystems) {
-			system.autoInit();
-		} // set all subsystems to auton
-	} // auton start
+	// 	for (Subsystem system : subsystems) {
+	// 		system.autoInit();
+	// 	} // set all subsystems to auton
+	// } // auton start
 	
 	@Override
 	public void teleopInit() {
+		SmartDashboard.putNumber("Test2", 17);
 		state.setRobotState(RobotState.TELEOP);
 
 		for (Subsystem system : subsystems) {
 			system.teleopInit();
 		} // set all subsystems to teleop
+		SmartDashboard.putNumber("Test37", 1);
+		SmartDashboard.putNumber("Disabled1", 0);	
 	} // teleop start
 
 	@Override
 	public void disabledInit() {
-		for (Subsystem system : subsystems) {
-			system.disabledInit();
-		} // set all subsystems to disabled
+		SmartDashboard.putNumber("Disabled1", 1);
+		// for (Subsystem system : subsystems) {
+		// 	system.disabledInit();
+		// } // set all subsystems to disabled
+		// SmartDashboard.putNumber("Test3", 18);
 	} // disabled robot
 
 	@Override
 	public void autoContinuous() {
-		if (state.getRobotState() == RobotState.AUTO) {
-			autoManager.runSequence();
+		SmartDashboard.putNumber("Disabled1", 4);
+		// if (state.getRobotState() == RobotState.AUTO) {
+		// 	autoManager.runSequence();
 
-			if (autoManager.sequenceEnded()) {
-				state.setRobotState(RobotState.TELEOP); // should this be left 2020 or deleted 
-			} // when done with auton set back to teleop
-		} // if in auto mode
+		// 	if (autoManager.sequenceEnded()) {
+		// 		state.setRobotState(RobotState.TELEOP); // should this be left 2020 or deleted 
+		// 	} // when done with auton set back to teleop
+		// } // if in auto mode
 
 		for (Subsystem system : subsystems) {
 			system.run(state.getRobotState());
@@ -91,15 +100,17 @@ public class Robot extends TorqueIterative {
 
 	@Override
 	public void teleopContinuous() {
+		SmartDashboard.putNumber("Test12", 22);
 		input.updateControllers();
-		
 		for (Subsystem system : subsystems) {
 			system.run(state.getRobotState());
 		}
+		SmartDashboard.putNumber("Test5", 19);
 	} // run at all times in state teleop
 
 	@Override
 	public void disabledContinuous() {
+		SmartDashboard.putNumber("Disabled1", 2);
 		for (Subsystem system : subsystems) {
 			system.disabledContinuous();
 		} // run disabled state in all subsystems
@@ -107,6 +118,7 @@ public class Robot extends TorqueIterative {
 
 	@Override
 	public void alwaysContinuous() {
+		SmartDashboard.putNumber("Disabled1", 7);
 		feedback.update();
 		feedback.smartDashboard();
 		

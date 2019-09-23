@@ -23,6 +23,8 @@ public class VectorUtils {
         return mag;
     } // vector addition 2d return magnitude of final vector
 
+    //public static double gyroVectorAdd(double offset, )
+
     public double getMagX(){
         return magX;
     } // return magnitude

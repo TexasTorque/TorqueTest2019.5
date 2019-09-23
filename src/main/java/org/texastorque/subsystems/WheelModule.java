@@ -9,6 +9,7 @@ import org.texastorque.util.VectorUtils;
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANError;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.EncoderType;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
@@ -33,6 +34,8 @@ public class WheelModule {
     private double prevMag;
     private double prevAng;
 
+    private double transConversionFactor = 1;
+
     private ScheduledPID rotationalPID;
     private ScheduledPID translationalPID;
 
@@ -41,6 +44,8 @@ public class WheelModule {
 
     private double rotSpeed;
     private double transSpeed;
+
+    private double gryoOffset;
 
     private int arrayValue;
 
@@ -51,14 +56,14 @@ public class WheelModule {
     WheelModule(int portTrans, int portRot, double moduleMagnitude, double moduleAngle, int arrayValue) {
         rotMot = new TorqueMotor(new VictorSP(portTrans), clockwise);
         transMot = new CANSparkMax(portRot, MotorType.kBrushless);
-        DB_trans = transMot.getEncoder();
+        DB_trans = transMot.getEncoder(EncoderType.kHallSensor, 4096);
         
         constM = moduleMagnitude;
         constA = moduleAngle;
         this.arrayValue = arrayValue;
 
-        rotationalPID = new ScheduledPID.Builder(0, 0, 0, 0)
-            .setPGains(.005)
+        rotationalPID = new ScheduledPID.Builder(0, 0, 1, 1)
+            .setPGains(0)
             .setIGains(0)
             //.setDGains(0)
             .build();
@@ -80,7 +85,7 @@ public class WheelModule {
         double rotRY = 0;
         
         setMag = VectorUtils.vectorAddition2DMagnitude(transX, transY, rotRX, rotRY);
-        setAng = VectorUtils.vectorAddition2DBearing(transX, transY, rotRX, rotRY);
+        setAng = VectorUtils.vectorAddition2DBearing(transX, transY, rotRX, rotRY) + feedback.getYaw();
         RotationalPID(setAng);
         transSpeed = setMag*.5;
     } // calculate what values need to be, must be running continously
@@ -124,8 +129,11 @@ public class WheelModule {
     }
 
     public void outputMotorSpeeds(){
+        SmartDashboard.putNumber("rotSpeedInput", rotSpeed);
+        SmartDashboard.putNumber("transSpeedInput", transSpeed);
         rotMot.set(rotSpeed);
         transMot.set(transSpeed);
+        SmartDashboard.putNumber("Test17", 27);
     } // set the motor speeds to the correct numbers
 
     public void RotationalPID(double angle){ // NOT GOOD <- FIX LATER

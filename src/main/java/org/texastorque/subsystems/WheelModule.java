@@ -63,7 +63,7 @@ public class WheelModule {
         this.arrayValue = arrayValue;
 
         rotationalPID = new ScheduledPID.Builder(0, 0, 1, 1)
-            .setPGains(0)
+            .setPGains(.002)
             .setIGains(0)
             //.setDGains(0)
             .build();

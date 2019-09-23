@@ -45,6 +45,8 @@ public class Feedback {
         
         NT_instance = NetworkTableInstance.getDefault();
         NT_offsetEntry = NT_instance.getTable("limelight").getEntry("tx");
+
+        resetEncoders();
     } // constructor 
 
     public void update() {
@@ -81,24 +83,35 @@ public class Feedback {
 
     public void updateDriveEncoders(){
 
-        for(TorqueEncoder e : DB_rot_encoders){
-            e.calc();
+        for (int x = 0; x < DB_rot_encoders.length; x++){
+            try{
+                DB_rot_encoders[x].calc();
+                SmartDashboard.putNumber("DB_rot_encoders[" + x + "],", DB_rot_encoders[x].get());
+            }
+            catch(Exception e){
+                System.out.println("Feedback updateDriveEncoders calc: " + x);
+            }
+            
         } // encoder.calc for all drive rotation encoders
 
         // rotation gearing = 60:1, drive gearing = 44.4:1
         
-        for(int x = 0; x <= 1; x++){
+        for(int x = 0; x < DB_rot_encoders.length; x++){
             try{
-                DB_Rot_Raw[x] = DB_rot_encoders[x].get();
+                DB_Rot_Raw[x] = DB_rot_encoders[x].getRaw();
+                SmartDashboard.putNumber("DB_rot_raw[" + x + "],", DB_Rot_Raw[x]);
             }
             catch(Exception e){
                 System.out.println("Feedback updateDriveEncoders db_rot_raw: " + x);
+                // System.out.println("db_rot_raw error")
             }
         } // encoder.get() for all drive rotation encoders
 
-        for(int x = 0; x <= 1; x++){
+        for(int x = 0; x < DB_rot_encoders.length; x++){
             try{
                 DB_Rot_Speed[x] = DB_rot_encoders[x].getRate() * DISTANCE_PER_PULSE;
+                SmartDashboard.putNumber("DB_Rot_Speed[" + x + "],", DB_rot_encoders[x].getRate());
+                SmartDashboard.putNumber("DISTANCE_PER_PULSE,", DISTANCE_PER_PULSE);
             }
             catch(Exception e){
                 System.out.println("Feedback updateDriveEncoders db_rot_speed: " + x);
@@ -107,9 +120,10 @@ public class Feedback {
         } // update speeds for all drive rotation encoders
         
         // NEED SPECIFICS FROM BEN ON WHERE ENCODER IS GOING TO GO!!! THIS IS NOT FINAL!! NEED TO ADD MORE BASED ON THAT
-        for(int x = 0; x <= 1; x++) {
+        for(int x = 0; x < DB_Rot_Raw.length; x++) {
             try{
-                DB_Rot_Angle[x] = DB_Rot_Raw[x] * 2.8;
+                DB_Rot_Angle[x] = DB_Rot_Raw[x] * ANGLE_PER_PULSE * 2.8;
+                SmartDashboard.putNumber("DB_Rot_Angle[" + x + "]", DB_Rot_Angle[x]);
             }
             catch(Exception e){
                 System.out.println("Feedback updateDriveEncoders db_rot_angle: " + x);
@@ -124,7 +138,7 @@ public class Feedback {
     } // return rotation speed
 
     public double getRotAngle(int module) {
-        System.out.println("Feedback getRotAngle: " + DB_Rot_Angle.length);
+        // System.out.println("Feedback getRotAngle: " + DB_Rot_Angle[module]);
         return DB_Rot_Angle[module];
     } // return rotation angle
 

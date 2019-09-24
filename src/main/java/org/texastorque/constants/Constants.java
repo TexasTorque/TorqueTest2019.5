@@ -2,7 +2,7 @@ package org.texastorque.constants;
 
 public class Constants {
     public static final double DB_WIDTH = 0; // (ft)
-    public static final double WHEEL_DIAMETER = 0; // (ft)
+    public static final double WHEEL_DIAMETER = 0.333; // (ft)
     public static final double PULSES_PER_ROTATION = 1000;
 
     public static final double DB_LOW_MAX_SPEED = 0; // Low gear max speed (ft/s)

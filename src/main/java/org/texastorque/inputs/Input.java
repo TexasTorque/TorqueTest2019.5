@@ -112,10 +112,13 @@ public class Input {
 
     public double toBearing(double angle) {
         double bearing = 0;
+        if (angle > 360){
+            angle = angle % 360;
+        }
         bearing = 90 - angle;
-        if (bearing < 0){
-            bearing = 360 + bearing;
-        } // change them all to positive bearings for ease of use
+        if (Math.abs(angle) > 180){
+            
+        }
         return bearing;
     } // change value to a bearing
 

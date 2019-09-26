@@ -15,6 +15,12 @@ import edu.wpi.first.wpilibj.AnalogInput;
  * Retrieve values from all sensors and NetworkTables
  */
 
+
+/* TODO:
+change rotation angle so that it goes 0-180 both ways
+tobearing method ^
+*/
+
 public class Feedback {
 
     private static volatile Feedback instance;
@@ -22,7 +28,7 @@ public class Feedback {
     // Conversions
     public final double DISTANCE_PER_PULSE = Math.PI * Constants.WHEEL_DIAMETER / Constants.PULSES_PER_ROTATION;
     public final double ANGLE_PER_PULSE = 360.0 / Constants.PULSES_PER_ROTATION;
-    public final double FEET_CONVERSION = Math.PI * (1.0/20) / Constants.PULSES_PER_ROTATION; // Using approximate shaft diameter
+    public final double FEET_CONVERSION = Math.PI * (1.0/40) / Constants.PULSES_PER_ROTATION; // Using approximate shaft diameter
 
     // Sensors
     private final TorqueEncoder[] DB_rot_encoders= new TorqueEncoder[1];
@@ -45,8 +51,7 @@ public class Feedback {
         
         NT_instance = NetworkTableInstance.getDefault();
         NT_offsetEntry = NT_instance.getTable("limelight").getEntry("tx");
-
-        resetEncoders();
+        resetDriveEncoders();
     } // constructor 
 
     public void update() {
@@ -96,10 +101,10 @@ public class Feedback {
 
         // rotation gearing = 60:1, drive gearing = 44.4:1
         
-        for(int x = 0; x < DB_rot_encoders.length; x++){
+        for(int x = 0; x < 1; x++){
             try{
-                DB_Rot_Raw[x] = DB_rot_encoders[x].getRaw();
-                SmartDashboard.putNumber("DB_rot_raw[" + x + "],", DB_Rot_Raw[x]);
+                DB_Rot_Raw[x] = DB_rot_encoders[x].get();
+                SmartDashboard.putNumber("DB_Rot_Raw[" + x + "]", DB_Rot_Raw[x]);
             }
             catch(Exception e){
                 System.out.println("Feedback updateDriveEncoders db_rot_raw: " + x);
@@ -107,11 +112,10 @@ public class Feedback {
             }
         } // encoder.get() for all drive rotation encoders
 
-        for(int x = 0; x < DB_rot_encoders.length; x++){
+        for(int x = 0; x < 1; x++){
             try{
                 DB_Rot_Speed[x] = DB_rot_encoders[x].getRate() * DISTANCE_PER_PULSE;
-                SmartDashboard.putNumber("DB_Rot_Speed[" + x + "],", DB_rot_encoders[x].getRate());
-                SmartDashboard.putNumber("DISTANCE_PER_PULSE,", DISTANCE_PER_PULSE);
+                SmartDashboard.putNumber("DB_Rot_Speed[" + x + "]", DB_Rot_Speed[x]);
             }
             catch(Exception e){
                 System.out.println("Feedback updateDriveEncoders db_rot_speed: " + x);
@@ -120,14 +124,21 @@ public class Feedback {
         } // update speeds for all drive rotation encoders
         
         // NEED SPECIFICS FROM BEN ON WHERE ENCODER IS GOING TO GO!!! THIS IS NOT FINAL!! NEED TO ADD MORE BASED ON THAT
-        for(int x = 0; x < DB_Rot_Raw.length; x++) {
+        for(int x = 0; x < 1; x++) {
             try{
-                DB_Rot_Angle[x] = DB_Rot_Raw[x] * ANGLE_PER_PULSE * 2.8;
-                SmartDashboard.putNumber("DB_Rot_Angle[" + x + "]", DB_Rot_Angle[x]);
+                DB_Rot_Angle[x] = (DB_Rot_Raw[x]) / 8.5;// * ANGLE_PER_PULSE * 2.8);//%360;
+                // if(DB_Rot_Angle[x] > 180){
+                //     DB_Rot_Angle[x] -= 360;
+                // }
+                // else if (DB_Rot_Angle[x] < -180){
+                //     DB_Rot_Angle[x] += 360;
+                // }
+                SmartDashboard.putNumber("DB_Rot_Angle[" + x + "]", DB_Rot_Angle[0]);
             }
             catch(Exception e){
                 System.out.println("Feedback updateDriveEncoders db_rot_angle: " + x);
             }
+            SmartDashboard.putNumber("Encoder1", DB_Rot_Angle[0]);
         } // get angle at which each wheel has turned 
 
     } // update drive encoders
@@ -138,7 +149,8 @@ public class Feedback {
     } // return rotation speed
 
     public double getRotAngle(int module) {
-        // System.out.println("Feedback getRotAngle: " + DB_Rot_Angle[module]);
+        //System.out.println("Feedback getRotAngle: " + DB_Rot_Angle.length);
+        SmartDashboard.putNumber("WheelModule.RotationalPID rotAngle: ", DB_Rot_Angle[module]);
         return DB_Rot_Angle[module];
     } // return rotation angle
 

@@ -63,7 +63,7 @@ public class WheelModule {
         this.arrayValue = arrayValue;
 
         rotationalPID = new ScheduledPID.Builder(0, 0, 1, 1)
-            .setPGains(.002)
+            .setPGains(0.002)
             .setIGains(0)
             //.setDGains(0)
             .build();
@@ -166,7 +166,7 @@ public class WheelModule {
             } 
             catch(Exception e){
                 System.out.println("WheelModule.RotationalPID rotAngle: " + e.toString());
-                rotAngle = 0;
+                //rotAngle = 0;
             }
 
             SmartDashboard.putNumber("WheelModule.RotationalPID rotAngle", rotAngle);

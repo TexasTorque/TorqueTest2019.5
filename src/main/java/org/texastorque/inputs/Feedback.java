@@ -97,6 +97,7 @@ public class Feedback {
         for(int x = 0; x < 1; x++){
             try{
                 DB_Rot_Raw[x] = DB_rot_encoders[x].get();
+                SmartDashboard.putNumber("DB_Rot_Raw[" + x + "]", DB_Rot_Raw[x]);
             }
             catch(Exception e){
                 System.out.println("Feedback updateDriveEncoders db_rot_raw: " + x);
@@ -106,6 +107,7 @@ public class Feedback {
         for(int x = 0; x < 1; x++){
             try{
                 DB_Rot_Speed[x] = DB_rot_encoders[x].getRate() * DISTANCE_PER_PULSE;
+                SmartDashboard.putNumber("DB_Rot_Speed[" + x + "]", DB_Rot_Speed[x]);
             }
             catch(Exception e){
                 System.out.println("Feedback updateDriveEncoders db_rot_speed: " + x);
@@ -123,7 +125,7 @@ public class Feedback {
                 // else if (DB_Rot_Angle[x] < -180){
                 //     DB_Rot_Angle[x] += 360;
                 // }
-                SmartDashboard.putNumber("DB_Rot_Angle Feedback", DB_Rot_Angle[0]);
+                SmartDashboard.putNumber("DB_Rot_Angle[" + x + "]", DB_Rot_Angle[0]);
             }
             catch(Exception e){
                 System.out.println("Feedback updateDriveEncoders db_rot_angle: " + x);

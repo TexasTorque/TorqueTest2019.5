@@ -3,6 +3,7 @@ package org.texastorque.torquelib.component;
 import edu.wpi.first.wpilibj.CounterBase;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * Class for a FRC encoder.
@@ -55,7 +56,6 @@ public class TorqueEncoder extends Encoder {
 	public void calc() {
 		double currentTime = Timer.getFPGATimestamp();
 		double currentPosition = super.get();
-
 		averageRate = (currentPosition - previousPosition) / (currentTime - previousTime);
 		acceleration = (averageRate - previousRate) / (currentTime - previousTime);
 

@@ -54,15 +54,10 @@ public class Drivebase extends Subsystem{
 
     @Override
     public void teleopInit() {
-        SmartDashboard.putNumber("Drivebase teleopInit", 20);
         for (WheelModule m : modules){
-            SmartDashboard.putNumber("Drivebase for module", 1);
             m.setRotSpeed(0);
-            SmartDashboard.putNumber("Drivebase for module 2", 1);
             m.setTransSpeed(0);
-
         } // set to 0 at start of auton
-        SmartDashboard.putNumber("Test11", 21);
     } // what to do when teleop is initialized
 
     @Override
@@ -76,19 +71,17 @@ public class Drivebase extends Subsystem{
     @Override
     public void run(RobotState state) {
         int count = 0;
-        SmartDashboard.putNumber("Drivebase.run start", rand.nextInt());
+
         if(state == RobotState.AUTO){
             // put what to do in auto
         }
         else if(state == RobotState.TELEOP){
             try{
-                SmartDashboard.putNumber("Drivebase.run teleop", rand.nextInt());
                 for (WheelModule m : modules){
-                    SmartDashboard.putNumber("Drivebase.run teleop.for", rand.nextInt() );
+                    SmartDashboard.putNumber("Drivebase.run transXInput", input.getTransX());
                     SmartDashboard.putNumber("Drivebase.run transYInput", input.getTransY());
                     SmartDashboard.putNumber("Drivebase.run rotRInput", input.getRotR());
                     m.calc(input.getTransX(), input.getTransY(), input.getRotR(), constantAngles[count]);
-                    SmartDashboard.putNumber("Drivebase.run teleop.endfor", rand.nextInt());
                 } // calculate values for each module continuously 
             }
             catch(Exception e){
@@ -104,7 +97,6 @@ public class Drivebase extends Subsystem{
 
     @Override
     protected void output() {
-        SmartDashboard.putNumber("Drivebase output", 26);
         for(WheelModule m : modules){
             m.outputMotorSpeeds();
         } // sets the motors speeds to the necessary values

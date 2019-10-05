@@ -18,7 +18,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class WheelModule {
 
-    private Feedback feedback;
+    private Feedback feedback = Feedback.getInstance();;
 
     private TorqueMotor rotMot;
     private CANSparkMax transMot;
@@ -54,14 +54,16 @@ public class WheelModule {
     // moduleMagnitude is the magnitude of the distance from the center of mass to the module
     // moduleAngle is the bearing of the wheel module from robot front
     WheelModule(int portTrans, int portRot, double moduleMagnitude, double moduleAngle, int arrayValue) {
+        this.arrayValue = arrayValue;
+        SmartDashboard.putNumber("WheelModule arrayValue: ", arrayValue);
+
         rotMot = new TorqueMotor(new VictorSP(portTrans), clockwise);
         transMot = new CANSparkMax(portRot, MotorType.kBrushless);
         DB_trans = transMot.getEncoder(EncoderType.kHallSensor, 4096);
         
         constM = moduleMagnitude;
         constA = moduleAngle;
-        this.arrayValue = arrayValue;
-
+        
         rotationalPID = new ScheduledPID.Builder(0, 0, 1, 1)
             .setPGains(0.002)
             .setIGains(0)
@@ -80,33 +82,40 @@ public class WheelModule {
 
     public void calc(double transX, double transY, double rotR, double constAng){
         double rotRX = 0.0, rotRY = 0.0;
-        
+        rotRX = rotR;
+        rotRY = rotR;
         try{
-
-            rotRX = calcRotRX(rotR, constAng);
-            
-            rotRY = calcRotRY(rotR, constAng);
-
+            // rotRX = calcRotRX(rotR, constAng);            
+            // rotRY = calcRotRY(rotR, constAng);
         }
         catch(Exception e){
             System.out.println("WheelModule.calc exception tostring: " + e.toString());
             System.out.println("WheelModule.calc exception message: " + e.getMessage());
         }
 
-        SmartDashboard.putNumber("rotRX", rotRX);
-        SmartDashboard.putNumber("rotRY", rotRY);
-        SmartDashboard.putNumber("transX", transX);
-        SmartDashboard.putNumber("transY", transY);
+        SmartDashboard.putNumber("WheelModule.calc constAng", constAng);
+        SmartDashboard.putNumber("WheelModule.calc rotRX", rotRX);
+        SmartDashboard.putNumber("WheelModule.calc rotRY", rotRY);
+        SmartDashboard.putNumber("WheelModule.calc transX", transX);
+        SmartDashboard.putNumber("WheelModule.calc transY", transY);
 
         try{
 
             setMag = VectorUtils.vectorAddition2DMagnitude(transX, transY, rotRX, rotRY);
-            SmartDashboard.putNumber("setMag", setMag);
+            SmartDashboard.putNumber("WheelModule.calc setMag", setMag);
+            
             setAng = VectorUtils.vectorAddition2DBearing(transX, transY, rotRX, rotRY);// + feedback.getYaw();
-            SmartDashboard.putNumber("setAng", setAng);
-            RotationalPID(setAng);
+            SmartDashboard.putNumber("WheelModule.calc setAng", setAng);
 
-            transSpeed = setMag*.5;
+            RotationalPID(setAng);
+            // rotSpeed = 0;
+            
+            // transSpeed = setMag*.5;
+
+            // independent test
+            // transSpeed = transY * .5;
+            // rotSpeed = rotR *.4;
+
         }
         catch(Exception e){
             System.out.println("WheelModule.calc set e tostring: " + e.toString());
@@ -147,53 +156,51 @@ public class WheelModule {
     } // set translational speed from the outside, DO NOT USE IN TELEOP
 
     public void outputMotorSpeeds(){
-        SmartDashboard.putNumber("WheelModule.outputMotorSpeeds - rotSpeedInput", rotSpeed);
-        SmartDashboard.putNumber("WheelModule.outputMotorSpeeds - transSpeedInput", transSpeed);
+        SmartDashboard.putNumber("WheelModule.outputMotorSpeeds - rotSpeed", rotSpeed);
+        SmartDashboard.putNumber("WheelModule.outputMotorSpeeds - transSpeed", transSpeed);
         rotMot.set(rotSpeed);
         transMot.set(transSpeed);
-        SmartDashboard.putNumber("WheelModule.outputMotorSpeeds - Complete", 27);
     } // set the motor speeds to the correct numbers
 
     public void RotationalPID(double angle){ // NOT GOOD <- FIX LATER
         double rotAngle = 0.0;
+        SmartDashboard.putNumber("WheelModule.RotationalPID angle", angle);
+
         try{
-            SmartDashboard.putNumber("WheelModule.RotationalPID angle", angle);
-            SmartDashboard.putNumber("WheelModule.RotationalPID arrayValue", arrayValue);
-            
-            // TODO: fix everything below
-            try{
-                rotAngle = feedback.getRotAngle(arrayValue);
-            } 
-            catch(Exception e){
-                System.out.println("WheelModule.RotationalPID rotAngle: " + e.toString());
-                //rotAngle = 0;
-            }
-
+            rotAngle = feedback.getRotAngle(arrayValue);
             SmartDashboard.putNumber("WheelModule.RotationalPID rotAngle", rotAngle);
-
+        } 
+        catch(Exception e){
+            System.out.println("[ERROR] WheelModule.RotationalPID rotAngle arrayValue " + arrayValue + "\n" + e.toString());
+        }           
             
-            try{
-                currentAng = lowPassRot.filter(rotAngle);
-            }
-            catch(Exception e){
-                System.out.println("WheelModule.RotationalPID currentAng: " + e.toString());
-                currentAng = 0;
-            }
+        try{
+            SmartDashboard.putNumber("WheelModule.RotationalPID currentAng before lowPass", currentAng);
+            currentAng = lowPassRot.filter(rotAngle);
+            SmartDashboard.putNumber("WheelModule.RotationalPID currentAng lowPass", currentAng);
+        }
+        catch(Exception e){
+            System.out.println("[ERROR] WheelModule.RotationalPID currentAng lowPass: " + e.toString());
+            currentAng = 0;
+        }
             
-            SmartDashboard.putNumber("WheelModule.RotationalPID currentAng", currentAng);
-
+        try{
             if (angle != currentAng){
                 rotationalPID.changeSetpoint(angle);
                 prevAng = angle;
             } // if not already there, go to the correct position
             
-            SmartDashboard.putNumber("WheelModule.RotationalPID currentAng after", currentAng);
-            rotSpeed = rotationalPID.calculate(currentAng);
+            // SmartDashboard.putNumber("WheelModule.RotationalPID currentAng after", currentAng);
+            
+            // what does this do?
+            rotSpeed = rotationalPID.calculate(currentAng) - 0.18;
             SmartDashboard.putNumber("WheelModule.RotationalPID rotSpeed", rotSpeed);
         }
         catch(Exception e){
-            System.out.println("WheelModule.RotationalPID: " + e.toString());
+            System.out.println("[ERROR] WheelModule.RotationalPID last try: " + e.toString());
         }
+
+
     } // setWheelAngle
 
     // public void runTranslationalPID(double distance){ // NEED TO FIX/WRITE THIS PID !!!!!!!!!

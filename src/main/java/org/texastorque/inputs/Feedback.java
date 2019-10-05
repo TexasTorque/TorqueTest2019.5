@@ -91,7 +91,7 @@ public class Feedback {
         for (int x = 0; x < DB_rot_encoders.length; x++){
             try{
                 DB_rot_encoders[x].calc();
-                SmartDashboard.putNumber("DB_rot_encoders[" + x + "],", DB_rot_encoders[x].get());
+                SmartDashboard.putNumber("Feedback.updateDriveEncoders DB_rot_encoders[" + x + "]", DB_rot_encoders[x].get());
             }
             catch(Exception e){
                 System.out.println("Feedback updateDriveEncoders calc: " + x);
@@ -104,7 +104,7 @@ public class Feedback {
         for(int x = 0; x < 1; x++){
             try{
                 DB_Rot_Raw[x] = DB_rot_encoders[x].get();
-                SmartDashboard.putNumber("DB_Rot_Raw[" + x + "]", DB_Rot_Raw[x]);
+                SmartDashboard.putNumber("Feedback.updateDriveEncoders DB_Rot_Raw[" + x + "]", DB_Rot_Raw[x]);
             }
             catch(Exception e){
                 System.out.println("Feedback updateDriveEncoders db_rot_raw: " + x);
@@ -115,7 +115,8 @@ public class Feedback {
         for(int x = 0; x < 1; x++){
             try{
                 DB_Rot_Speed[x] = DB_rot_encoders[x].getRate() * DISTANCE_PER_PULSE;
-                SmartDashboard.putNumber("DB_Rot_Speed[" + x + "]", DB_Rot_Speed[x]);
+                SmartDashboard.putNumber("Feedback.updateDriveEncoders DB_rot_encoders[" + x + "].getRate()", DB_rot_encoders[x].getRate());
+                SmartDashboard.putNumber("Feedback.updateDriveEncoders DB_Rot_Speed[" + x + "]", DB_Rot_Speed[x]);
             }
             catch(Exception e){
                 System.out.println("Feedback updateDriveEncoders db_rot_speed: " + x);
@@ -133,7 +134,7 @@ public class Feedback {
                 // else if (DB_Rot_Angle[x] < -180){
                 //     DB_Rot_Angle[x] += 360;
                 // }
-                SmartDashboard.putNumber("DB_Rot_Angle[" + x + "]", DB_Rot_Angle[0]);
+                SmartDashboard.putNumber("Feedback.updateDriveEncoders DB_Rot_Angle[" + x + "]", DB_Rot_Angle[0]);
             }
             catch(Exception e){
                 System.out.println("Feedback updateDriveEncoders db_rot_angle: " + x);
@@ -149,9 +150,14 @@ public class Feedback {
     } // return rotation speed
 
     public double getRotAngle(int module) {
-        //System.out.println("Feedback getRotAngle: " + DB_Rot_Angle.length);
-        SmartDashboard.putNumber("WheelModule.RotationalPID rotAngle: ", DB_Rot_Angle[module]);
-        return DB_Rot_Angle[module];
+        try{
+            SmartDashboard.putNumber("WheelModule.RotationalPID rotAngle: ", DB_Rot_Angle[module]);
+            return DB_Rot_Angle[module];
+        }
+        catch(Exception e){
+            System.out.println("[ERROR] Feedback getRotAngle " + e.toString());
+            return -9999999.999;
+        }        
     } // return rotation angle
 
 

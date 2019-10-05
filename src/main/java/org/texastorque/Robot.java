@@ -36,7 +36,6 @@ public class Robot extends TorqueIterative {
 		initSubsystems();
 		feedback.resetNavX();
 		feedback.resetEncoders();
-		SmartDashboard.putNumber("Test", 15);
 		// UsbCamera camera = CameraServer.getInstance().startAutomaticCapture();
 		// camera.setResolution(320, 240);
 		// camera.setFPS(16);
@@ -45,7 +44,6 @@ public class Robot extends TorqueIterative {
 	private void initSubsystems() {
 		subsystems = new ArrayList<Subsystem>();
 		subsystems.add(driveBase);
-		SmartDashboard.putNumber("Test1", 16);
 		//subsystems.add(subsystemName);
 	} // initialize subsystems 
 
@@ -63,29 +61,24 @@ public class Robot extends TorqueIterative {
 	
 	@Override
 	public void teleopInit() {
-		SmartDashboard.putNumber("Test2", 17);
+
 		state.setRobotState(RobotState.TELEOP);
 
 		for (Subsystem system : subsystems) {
 			system.teleopInit();
 		} // set all subsystems to teleop
-		SmartDashboard.putNumber("Test37", 1);
-		SmartDashboard.putNumber("Disabled1", 0);
 		
 	} // teleop start
 
 	@Override
 	public void disabledInit() {
-		SmartDashboard.putNumber("Disabled1", 1);
-		// for (Subsystem system : subsystems) {
-		// 	system.disabledInit();
-		// } // set all subsystems to disabled
-		// SmartDashboard.putNumber("Test3", 18);
+		for (Subsystem system : subsystems) {
+			system.disabledInit();
+		} // set all subsystems to disabled
 	} // disabled robot
 
 	@Override
 	public void autoContinuous() {
-		SmartDashboard.putNumber("Disabled1", 4);
 		// if (state.getRobotState() == RobotState.AUTO) {
 		// 	autoManager.runSequence();
 
@@ -101,17 +94,14 @@ public class Robot extends TorqueIterative {
 
 	@Override
 	public void teleopContinuous() {
-		SmartDashboard.putNumber("Test12", 22);
 		input.updateControllers();
 		for (Subsystem system : subsystems) {
 			system.run(state.getRobotState());
 		}
-		SmartDashboard.putNumber("Test5", 19);
 	} // run at all times in state teleop
 
 	@Override
 	public void disabledContinuous() {
-		SmartDashboard.putNumber("Disabled1", 2);
 		for (Subsystem system : subsystems) {
 			system.disabledContinuous();
 		} // run disabled state in all subsystems
@@ -119,7 +109,6 @@ public class Robot extends TorqueIterative {
 
 	@Override
 	public void alwaysContinuous() {
-		SmartDashboard.putNumber("Disabled1", 7);
 		feedback.update();
 		feedback.smartDashboard();
 		

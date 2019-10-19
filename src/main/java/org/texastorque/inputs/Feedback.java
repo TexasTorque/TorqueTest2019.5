@@ -15,7 +15,6 @@ import edu.wpi.first.wpilibj.AnalogInput;
  * Retrieve values from all sensors and NetworkTables
  */
 
-
 /* TODO:
 change rotation angle so that it goes 0-180 both ways
 tobearing method ^

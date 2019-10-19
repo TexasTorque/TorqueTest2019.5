@@ -18,7 +18,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class WheelModule {
 
-    private Feedback feedback;
+    private Feedback feedback = Feedback.getInstance();
 
     private TorqueMotor rotMot;
     private CANSparkMax transMot;

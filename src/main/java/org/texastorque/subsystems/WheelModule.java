@@ -77,7 +77,7 @@ public class WheelModule {
 				transTheta -= 180;
 			}
 			resultMag *= -1;
-		} // make angle fall in range of (-180,180]
+        } // make angle fall in range of (-180,180]
     } // calculate what values need to be, must be running continously
 
     public void setRotSpeed(double speed){

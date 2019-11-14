@@ -37,6 +37,10 @@ public class Drivebase extends Subsystem{
 
     @Override
     public void teleopInit() {
+        for (WheelModule m : modules){
+            m.setRotSpeed(0);
+            m.setTransSpeed(0);
+        } // set to 0 at start of teleop
     } // what to do when teleop is initialized
 
     @Override
@@ -48,6 +52,9 @@ public class Drivebase extends Subsystem{
         if(state == RobotState.AUTO){
         } // put what to do in auto
         else if(state == RobotState.TELEOP){
+            for (WheelModule m : modules){
+                m.calc(input.getTransX(), input.getTransY(), input.getRotMag());
+            } // what to do in teleop
         } // put what to do in teleop
         else if(state == RobotState.VISION){
         } // put what to do in vision
@@ -55,7 +62,11 @@ public class Drivebase extends Subsystem{
     } // run
 
     @Override
-    protected void output() {} // output
+    protected void output() {
+        for (WheelModule m : modules) {
+            m.outputMotorSpeeds();
+        }
+    } // output
 
     @Override
     public void disabledContinuous() {}

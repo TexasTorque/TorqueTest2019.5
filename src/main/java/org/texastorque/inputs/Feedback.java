@@ -24,17 +24,7 @@ tobearing method ^
 */
 
 
-<<<<<<< HEAD
-    // Conversions
-    public final double DISTANCE_PER_PULSE = Math.PI * Constants.WHEEL_DIAMETER / Constants.PULSES_PER_ROTATION;
-    public final double ANGLE_PER_PULSE = 360.0 / Constants.PULSES_PER_ROTATION;
-    public final double FEET_CONVERSION = Math.PI * (1.0/20) / Constants.PULSES_PER_ROTATION; // Using approximate shaft diameter
-
-    // Sensors
-    private final TorqueEncoder[] DB_rot_encoders= new TorqueEncoder[4];
-=======
 public class Feedback {
->>>>>>> a6d9c55020c87e455902f76b896d60a2976434fb
 
     private static volatile Feedback instance;
 
@@ -85,41 +75,14 @@ public class Feedback {
     } // reset drive encoders
 
     public void updateDriveEncoders(){
-<<<<<<< HEAD
-
-        for(TorqueEncoder e : DB_rot_encoders){
-            e.calc();
-        } // encoder.calc for all drive rotation encoders
-
-        // rotation gearing = 60:1, drive gearing = 44.4:1
-        
-        for(int x = 0; x < 4; x++){
-            DB_Rot_Raw[x] = DB_rot_encoders[x].get();
-        } // encoder.get() for all drive rotation encoders
-
-        for(int x = 0; x < 4; x++){
-            DB_Rot_Speed[x] = DB_rot_encoders[x].getRate() * DISTANCE_PER_PULSE;
-        } // update speeds for all drive rotation encoders
-        
-        // NEED SPECIFICS FROM BEN ON WHERE ENCODER IS GOING TO GO!!! THIS IS NOT FINAL!! NEED TO ADD MORE BASED ON THAT
-        for(int x = 0; x < 4; x++) {
-            DB_Rot_Angle[x] = DB_Rot_Raw[x] * 2.8;
-        } // get angle at which each wheel has turned 
-
-=======
         for (int i = 0; i < driveEncoders.size(); i++){
             driveEncoders.get(i).calc();
             rotAngle.set(i,driveEncoders.get(i).get()/8.5); // EXPERIIMENTALLY DERIVED VALUE
         }
->>>>>>> a6d9c55020c87e455902f76b896d60a2976434fb
     } // update drive encoders
 
     public double getRotAngle(int module) {
-<<<<<<< HEAD
-        return DB_Rot_Angle[module];
-=======
         return rotAngle.get(module);
->>>>>>> a6d9c55020c87e455902f76b896d60a2976434fb
     } // return rotation angle
 
 

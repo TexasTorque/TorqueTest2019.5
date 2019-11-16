@@ -8,7 +8,7 @@ public class Ports {
 
     // DriveBase // first one is true, second is false
     // robot front left = 1, front right = 2, back left = 3, back right = 4
-    public static final int[] ROTMOT = {0,1,2,3};
+    public static final int[] ROTMOT = {1,0,3,2};
     public static final int[] TRANSMOT = {0,1,2,3};
 
     public static final int ROT_1 = isSwerve ? 1 : 0;
@@ -19,17 +19,18 @@ public class Ports {
     // ============ drivebase rotation encoders ===========
 
     // db = drivebase, rot = rotation
-    public static final int DB_ROT_1_A = 0;
-    public static final int DB_ROT_1_B = 1;
+    public static final int DB_ROT_0_A = 0;
+    public static final int DB_ROT_0_B = 1;
 
-    // public static final int DB_ROT_2_A = 0;
-    // public static final int DB_ROT_2_B = 0;
+    public static final int DB_ROT_1_A = 0;
+    public static final int DB_ROT_1_B = 0;
+
+    public static final int DB_ROT_2_A = 0;
+    public static final int DB_ROT_2_B = 0;
     
-    // public static final int DB_ROT_3_A = 0;
-    // public static final int DB_ROT_3_B = 0;
+    public static final int DB_ROT_3_A = 0;
+    public static final int DB_ROT_3_B = 0;
     
-    // public static final int DB_ROT_4_A = 0;
-    // public static final int DB_ROT_4_B = 0;
 
     // Sensors
 

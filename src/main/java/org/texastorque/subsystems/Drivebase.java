@@ -20,8 +20,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Drivebase extends Subsystem{
 
+    // WHEN TRYING ACTUAL SWERVE UNCOMMENT ALL THE MODULE STUFF
     private static volatile Drivebase instance;
     
+<<<<<<< HEAD
     double transX;
     double transY;
     double rotR;
@@ -33,18 +35,52 @@ public class Drivebase extends Subsystem{
         modules.add(new WheelModule(9,9,1,9));
         modules.add(new WheelModule(9,9,2,9));
         modules.add(new WheelModule(9,9,3,9));
+=======
+    // ArrayList<WheelModule> modules = new ArrayList<>();
+    private TorqueMotor rot0;
+    private TorqueMotor rot1;
+    private TorqueMotor rot2;
+    private TorqueMotor rot3;
+    
+    private CANSparkMax trans0;
+    private CANSparkMax trans1;
+    private CANSparkMax trans2;
+    private CANSparkMax trans3;
+    // 0 is front left, 1 is front right, 2 is back left, 3 is back right
+    private Drivebase() {
+        rot0 =  new TorqueMotor(new VictorSP(Ports.ROTMOT[0]), false);
+        rot1 =  new TorqueMotor(new VictorSP(Ports.ROTMOT[1]), false);
+        rot2 =  new TorqueMotor(new VictorSP(Ports.ROTMOT[2]), false);
+        rot3 =  new TorqueMotor(new VictorSP(Ports.ROTMOT[3]), false);
+
+        trans0 = new CANSparkMax(Ports.TRANSMOT[0], MotorType.kBrushless);
+        trans1 = new CANSparkMax(Ports.TRANSMOT[1], MotorType.kBrushless);
+        trans2 = new CANSparkMax(Ports.TRANSMOT[2], MotorType.kBrushless);
+        trans3 = new CANSparkMax(Ports.TRANSMOT[3], MotorType.kBrushless);
+        // modules.add(new WheelModule(13, -45.0, 0));
+        // modules.add(new WheelModule(13, 45.0, 1));
+        // modules.add(new WheelModule(13, -135.0, 2));
+        // modules.add(new WheelModule(13, 135.0, 3));
+>>>>>>> a6d9c55020c87e455902f76b896d60a2976434fb
     } // constructor
 
     @Override
     public void autoInit() {
-        for (WheelModule m : modules){
-            m.setRotSpeed(0);
-            m.setTransSpeed(0);
-        } // set to 0 at start of auton
+        // for (WheelModule m : modules){
+        //     m.setRotSpeed(0);
+        //     m.setTransSpeed(0);
+        // } // set to 0 at start of auton
     } //autoInit
 
     @Override
     public void teleopInit() {
+<<<<<<< HEAD
+=======
+        // for (WheelModule m : modules){
+        //     m.setRotSpeed(0);
+        //     m.setTransSpeed(0);
+        // } // set to 0 at start of teleop
+>>>>>>> a6d9c55020c87e455902f76b896d60a2976434fb
     } // what to do when teleop is initialized
 
     @Override
@@ -54,6 +90,7 @@ public class Drivebase extends Subsystem{
     @Override
     public void run(RobotState state) {
         if(state == RobotState.AUTO){
+<<<<<<< HEAD
             transX = input.getTransX();
             transY = input.getTransY();
             rotR = input.getRotMag();
@@ -67,6 +104,28 @@ public class Drivebase extends Subsystem{
             rotR = input.getRotMag();
             for(WheelModule m: modules){
                 m.calc(transX, transY, 0);
+=======
+        } // put what to do in auto
+        else if(state == RobotState.TELEOP){
+            // for (WheelModule m : modules){
+            //     m.calc(input.getTransX(), input.getTransY(), input.getRotMag());
+            // } // what to do in teleop
+            if (input.getModule0()){
+                trans0.set(input.getLeftYAxis());
+                rot0.set(input.getRightXAxis());
+            }
+            if (input.getModule1()){
+                trans1.set(input.getLeftYAxis());
+                rot1.set(input.getRightXAxis());
+            }
+            if (input.getModule2()){
+                trans2.set(input.getLeftYAxis());
+                rot2.set(input.getRightXAxis());
+            }
+            if (input.getModule3()){
+                trans3.set(input.getLeftYAxis());
+                rot3.set(input.getRightXAxis());
+>>>>>>> a6d9c55020c87e455902f76b896d60a2976434fb
             }
         } // put what to do in teleop
         else if(state == RobotState.VISION){
@@ -75,7 +134,15 @@ public class Drivebase extends Subsystem{
     } // run
 
     @Override
+<<<<<<< HEAD
     protected void output() {} // output
+=======
+    protected void output() {
+        // for (WheelModule m : modules) {
+        //     m.outputMotorSpeeds();
+        // } // output the motor speeds to the actual motors
+    } // output
+>>>>>>> a6d9c55020c87e455902f76b896d60a2976434fb
 
     @Override
     public void disabledContinuous() {}

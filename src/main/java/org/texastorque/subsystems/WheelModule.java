@@ -49,7 +49,11 @@ public class WheelModule {
     // DEFINITIONS:
     // moduleMagnitude is the magnitude of the distance from the center of mass to the module
     // moduleAngle is the bearing of the wheel module from robot front
+<<<<<<< HEAD
     WheelModule(double moduleMagnitude, double moduleAngle, int arrayValue, double constAng) {
+=======
+    WheelModule(double moduleMagnitude, double constAng, int arrayValue) {
+>>>>>>> a6d9c55020c87e455902f76b896d60a2976434fb
         rotMot = new TorqueMotor(new VictorSP(Ports.ROTMOT[arrayValue]), false);
         transMot = new CANSparkMax(Ports.TRANSMOT[arrayValue], MotorType.kBrushless);
         DB_trans = transMot.getEncoder(EncoderType.kHallSensor, 4096);
@@ -77,7 +81,11 @@ public class WheelModule {
 				transTheta -= 180;
 			}
 			resultMag *= -1;
+<<<<<<< HEAD
 		} // make angle fall in range of (-180,180]
+=======
+        } // make angle fall in range of (-180,180]
+>>>>>>> a6d9c55020c87e455902f76b896d60a2976434fb
     } // calculate what values need to be, must be running continously
 
     public void setRotSpeed(double speed){

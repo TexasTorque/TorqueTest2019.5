@@ -26,10 +26,12 @@ public class Input {
         operator = new GenericController(1, .1);
     } // constructor
     
+    // PUT UPDATE DRIVE BACK IN!!!!!!!!
     public void updateControllers() {
 
         if (!driver.getName().equals("")) {
-            updateDrive();
+            // updateDrive();
+            updateTestDrive();
             // update other driver stuff
         }
 
@@ -50,9 +52,44 @@ public class Input {
 	private double transThetaRaw = 0;
     private double transTheta = 0;
     private double rotMag = 0;
+
+    boolean module0;
+    boolean module1;
+    boolean module2;
+    boolean module3;
     
     private volatile boolean snapTo = false; 
     
+    public void updateTestDrive(){
+        module0 = driver.getBButton();
+        module1 = driver.getXButton();
+        module2 = driver.getYButton();
+        module3 = driver.getAButton();
+
+        
+    } // testing method, individually controls all the motors 
+
+    public boolean getModule0(){
+        return module0;
+    }
+    public boolean getModule1(){
+        return module1;
+    }
+    public boolean getModule2(){
+        return module2;
+    }
+    public boolean getModule3(){
+        return module3;
+    }
+
+    public double getLeftYAxis(){
+        return driver.getLeftYAxis();
+    }
+
+    public double getRightXAxis(){
+        return driver.getRightXAxis();
+    }
+
     public void updateDrive() {
         transX = driver.getLeftXAxis();
 		transY = -driver.getLeftYAxis();

@@ -23,9 +23,12 @@ change rotation angle so that it goes 0-180 both ways
 tobearing method ^
 */
 
+
 public class Feedback {
 
     private static volatile Feedback instance;
+
+    ArrayList<TorqueEncoder> driveEncoders = new ArrayList<>();
 
     private AHRS NX_gyro;
     private double pitch = 0;
@@ -33,6 +36,11 @@ public class Feedback {
 	private double yaw = 0;
     
     private Feedback() {
+        driveEncoders.add(new TorqueEncoder(Ports.DB_ROT_0_A, Ports.DB_ROT_0_B, false, EncodingType.k4X));
+        driveEncoders.add(new TorqueEncoder(Ports.DB_ROT_1_A, Ports.DB_ROT_1_B, false, EncodingType.k4X));
+        driveEncoders.add(new TorqueEncoder(Ports.DB_ROT_2_A, Ports.DB_ROT_2_B, false, EncodingType.k4X));
+        driveEncoders.add(new TorqueEncoder(Ports.DB_ROT_3_A, Ports.DB_ROT_3_B, false, EncodingType.k4X));
+
         resetEncoders();
         resetNavX();
     } // constructor 
@@ -58,7 +66,6 @@ public class Feedback {
     } // update all Encoders
 
     // ---- Drivebase Rotation Encoders ----
-    ArrayList<TorqueEncoder> driveEncoders = new ArrayList<>();
     ArrayList<Double> rotAngle = new ArrayList<>();
 
     public void resetDriveEncoders(){

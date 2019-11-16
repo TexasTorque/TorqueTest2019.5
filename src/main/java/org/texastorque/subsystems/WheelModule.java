@@ -49,7 +49,7 @@ public class WheelModule {
     // DEFINITIONS:
     // moduleMagnitude is the magnitude of the distance from the center of mass to the module
     // moduleAngle is the bearing of the wheel module from robot front
-    WheelModule(double moduleMagnitude, double moduleAngle, int arrayValue, double constAng) {
+    WheelModule(double moduleMagnitude, double constAng, int arrayValue) {
         rotMot = new TorqueMotor(new VictorSP(Ports.ROTMOT[arrayValue]), false);
         transMot = new CANSparkMax(Ports.TRANSMOT[arrayValue], MotorType.kBrushless);
         DB_trans = transMot.getEncoder(EncoderType.kHallSensor, 4096);

@@ -24,7 +24,12 @@ public class Drivebase extends Subsystem{
     
     ArrayList<WheelModule> modules = new ArrayList<>();
     
+    // 0 is front left, 1 is front right, 2 is back left, 3 is back right
     private Drivebase() {
+        modules.add(new WheelModule(13, -45.0, 0));
+        modules.add(new WheelModule(13, 45.0, 1));
+        modules.add(new WheelModule(13, -135.0, 2));
+        modules.add(new WheelModule(13, 135.0, 3));
     } // constructor
 
     @Override
